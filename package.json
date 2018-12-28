@@ -1,0 +1,40 @@
+{
+    "name": "react-widget-trigger",
+    "version": "1.0.0",
+    "description": "trigger",
+    "main": "index.js",
+    "files": [
+        "*.js",
+        "lib",
+        "*.md"
+    ],
+    "scripts": {
+        "demo": "node build/examples",
+        "docs": "node build/docs",
+        "start": "transform-es src -d lib -c -w",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/react-widget/trigger.git"
+    },
+    "keywords": [],
+    "author": "nobo.zhou@foxmail.com",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/react-widget/trigger/issues"
+    },
+    "homepage": "https://github.com/react-widget/trigger#readme",
+    "dependencies": {
+        "classnames": "^2.2.6",
+        "prop-types": "^15.6.2",
+        "react": "^16.5.2",
+        "react-dom": "^16.5.2",
+        "react-widget-popup": "^1.0.0",
+        "warning": "^4.0.2"
+    },
+    "devDependencies": {
+        "packez": "^1.1.0",
+        "transform-es": "^2.2.10"
+    }
+}
