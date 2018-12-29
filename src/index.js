@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Popup from 'react-widget-popup';
+import getPlacement from 'bplokjs-placement';
+import Deferred from 'bplokjs-deferred';
 
 const propTypes = {
 
@@ -18,16 +20,19 @@ export default class Trigger extends React.Component {
     promise = null
 
     componentDidMount() {
-
+        this.resolvePopupDOM();
     }
 
     componentDidUpdate() {
-
+        this.resolvePopupDOM();
     }
 
     resolvePopupDOM() {
         if (this.promise) {
-            this.promise.resolve(ReactDOM.findDOMNode(this));
+            this.promise.resolve({
+                of: ReactDOM.findDOMNode(this),
+                ...getPlacement('bottomLeft')
+            });
         }
     }
 
@@ -37,13 +42,14 @@ export default class Trigger extends React.Component {
             children
         } = this.props;
 
-        this.promise = new Promise();
+        this.promise = Deferred();
 
         return (
             <>
                 {children}
                 <Popup
                     placement={this.promise}
+                    visible
                 >
                     <div>
                         test...
