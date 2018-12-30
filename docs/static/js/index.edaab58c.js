@@ -350,6 +350,7 @@ function (_React$Component) {
       return _react.default.createElement(_src.default, {
         offset: 1,
         action: "hover",
+        delay: 1000,
         popup: _react.default.createElement("div", {
           className: "trigger-container"
         }, placement),
@@ -406,7 +407,18 @@ function (_Component) {
         placement: "topCenter"
       }), _react.default.createElement(TriggerBtn, {
         placement: "topRight"
-      })), _react.default.createElement(_reactWidgetLayout.default, null, _react.default.createElement(_reactWidgetLayout.default.Sider, {
+      }), _react.default.createElement(_src.default, {
+        offset: 1,
+        delay: 1000,
+        action: "focus",
+        popup: _react.default.createElement("div", {
+          className: "trigger-container"
+        }, "rightCenter"),
+        placement: "rightCenter"
+      }, _react.default.createElement("input", {
+        type: "text",
+        placeholder: "focus show"
+      }))), _react.default.createElement(_reactWidgetLayout.default, null, _react.default.createElement(_reactWidgetLayout.default.Sider, {
         style: {
           width: 80
         }
@@ -436,7 +448,15 @@ function (_Component) {
         placement: "bottomCenter"
       }), _react.default.createElement(TriggerBtn, {
         placement: "bottomRight"
-      })));
+      }), _react.default.createElement(_src.default, {
+        offset: 1,
+        delay: 1000,
+        action: "contextMenu",
+        popup: _react.default.createElement("div", {
+          className: "trigger-container"
+        }, "rightCenter"),
+        placement: "rightCenter"
+      }, _react.default.createElement("span", null, "contextMenu show"))));
     }
   }]);
   return DEMO;
@@ -552,8 +572,9 @@ var propTypes = {
   action: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.arrayOf(_propTypes.default.string)]),
   showAction: _propTypes.default.any,
   hideAction: _propTypes.default.any,
-  onPopupVisibleChange: _propTypes.default.func //afterPopupVisibleChange: PropTypes.func,
-
+  onPopupVisibleChange: _propTypes.default.func,
+  //afterPopupVisibleChange: PropTypes.func,
+  delay: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.object])
 };
 
 function noop() {}
@@ -578,42 +599,35 @@ function (_React$Component) {
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
       popupVisible: _this.props.defaultPopupVisible
     });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "delayTimer", null);
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "promise", null);
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onClick", function (event) {
-      //this.fireEvents('onClick', event);
-      // //focus will trigger click
-      // if (this.focusTime) {
-      //     let preTime;
-      //     if (this.preClickTime && this.preTouchTime) {
-      //         preTime = Math.min(this.preClickTime, this.preTouchTime);
-      //     } else if (this.preClickTime) {
-      //         preTime = this.preClickTime;
-      //     } else if (this.preTouchTime) {
-      //         preTime = this.preTouchTime;
-      //     }
-      //     if (Math.abs(preTime - this.focusTime) < 20) {
-      //         return;
-      //     }
-      //     this.focusTime = 0;
-      // }
-      // this.preClickTime = 0;
-      // this.preTouchTime = 0;
-      event.preventDefault();
-      var nextVisible = !_this.state.popupVisible;
-
-      if (_this.isClickToHide() && !nextVisible || nextVisible && _this.isClickToShow()) {
-        _this.setPopupVisible(!_this.state.popupVisible);
-      }
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "isFocusToShow", function () {
+      var _this$props = _this.props,
+          action = _this$props.action,
+          showAction = _this$props.showAction;
+      return action.indexOf('focus') !== -1 || showAction.indexOf('focus') !== -1;
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "isBlurToHide", function () {
+      var _this$props2 = _this.props,
+          action = _this$props2.action,
+          hideAction = _this$props2.hideAction;
+      return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onMouseEnter", function (e) {
-      //this.fireEvents('onMouseEnter', e);
-      // this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
-      _this.setPopupVisible(true);
+      _this.delaySetPopupVisible(true);
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onMouseLeave", function (e) {
-      // this.fireEvents('onMouseLeave', e);
-      //  this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
-      _this.setPopupVisible(false);
+      _this.delaySetPopupVisible(false);
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onFocus", function (e) {
+      if (_this.isFocusToShow()) {
+        _this.delaySetPopupVisible(true);
+      }
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onBlur", function (e) {
+      if (_this.isBlurToHide()) {
+        _this.delaySetPopupVisible(false);
+      }
     });
     return _this;
   }
@@ -631,9 +645,9 @@ function (_React$Component) {
   }, {
     key: "resolvePopupDOM",
     value: function resolvePopupDOM() {
-      var _this$props = this.props,
-          placement = _this$props.placement,
-          offset = _this$props.offset;
+      var _this$props3 = this.props,
+          placement = _this$props3.placement,
+          offset = _this$props3.offset;
       var pOffset = [0, 0];
 
       if (!(0, _isArray.default)(offset)) {
@@ -666,81 +680,193 @@ function (_React$Component) {
   }, {
     key: "setPopupVisible",
     value: function setPopupVisible(popupVisible) {
-      //this.clearDelayTimer();
-      if (this.state.popupVisible !== popupVisible) {
-        if (!('popupVisible' in this.props)) {
-          this.setState({
-            popupVisible: popupVisible
-          });
-        }
-
-        this.props.onPopupVisibleChange(popupVisible);
+      if (!('popupVisible' in this.props)) {
+        this.setState({
+          popupVisible: popupVisible
+        });
       }
+
+      this.props.onPopupVisibleChange(popupVisible);
+    }
+  }, {
+    key: "clearDelayTimer",
+    value: function clearDelayTimer() {
+      if (this.delayTimer) {
+        clearTimeout(this.delayTimer);
+        this.delayTimer = null;
+      }
+    }
+  }, {
+    key: "getDelayTime",
+    value: function getDelayTime() {
+      var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'show';
+      var delay = this.props.delay;
+
+      if (typeof delay !== 'number') {
+        return Math.abs(delay[action]);
+      }
+
+      return Math.abs(delay);
+    }
+  }, {
+    key: "delaySetPopupVisible",
+    value: function delaySetPopupVisible(visible) {
+      var _this2 = this;
+
+      if (this.state.popupVisible === visible) {
+        return;
+      }
+
+      this.clearDelayTimer();
+      var delay = this.getDelayTime(visible ? 'show' : 'hide');
+
+      if (delay) {
+        this.delayTimer = setTimeout(function () {
+          _this2.setPopupVisible(visible);
+
+          _this2.delayTimer = null;
+        }, delay);
+      } else {
+        this.setPopupVisible(visible);
+      }
+    }
+  }, {
+    key: "isContextMenuToShow",
+    value: function isContextMenuToShow() {
+      var _this$props4 = this.props,
+          action = _this$props4.action,
+          showAction = _this$props4.showAction;
+      return action.indexOf('contextMenu') !== -1 || showAction.indexOf('contextMenu') !== -1;
     }
   }, {
     key: "isClickToShow",
     value: function isClickToShow() {
-      var _this$props2 = this.props,
-          action = _this$props2.action,
-          showAction = _this$props2.showAction;
+      var _this$props5 = this.props,
+          action = _this$props5.action,
+          showAction = _this$props5.showAction;
       return action.indexOf('click') !== -1 || showAction.indexOf('click') !== -1;
     }
   }, {
     key: "isClickToHide",
     value: function isClickToHide() {
-      var _this$props3 = this.props,
-          action = _this$props3.action,
-          hideAction = _this$props3.hideAction;
+      var _this$props6 = this.props,
+          action = _this$props6.action,
+          hideAction = _this$props6.hideAction;
       return action.indexOf('click') !== -1 || hideAction.indexOf('click') !== -1;
     }
   }, {
     key: "isMouseEnterToShow",
     value: function isMouseEnterToShow() {
-      var _this$props4 = this.props,
-          action = _this$props4.action,
-          showAction = _this$props4.showAction;
+      var _this$props7 = this.props,
+          action = _this$props7.action,
+          showAction = _this$props7.showAction;
       return action.indexOf('hover') !== -1 || showAction.indexOf('mouseEnter') !== -1;
     }
   }, {
     key: "isMouseLeaveToHide",
     value: function isMouseLeaveToHide() {
-      var _this$props5 = this.props,
-          action = _this$props5.action,
-          hideAction = _this$props5.hideAction;
+      var _this$props8 = this.props,
+          action = _this$props8.action,
+          hideAction = _this$props8.hideAction;
       return action.indexOf('hover') !== -1 || hideAction.indexOf('mouseLeave') !== -1;
+    }
+  }, {
+    key: "onContextMenu",
+    value: function onContextMenu(e) {
+      e.preventDefault();
+      this.delaySetPopupVisible(true);
+    }
+  }, {
+    key: "onClick",
+    value: function onClick(e) {
+      var nextVisible = !this.state.popupVisible;
+
+      if (this.isClickToHide() && !nextVisible || nextVisible && this.isClickToShow()) {
+        this.delaySetPopupVisible(!this.state.popupVisible);
+      }
     }
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       var popupVisible = this.state.popupVisible;
-      var _this$props6 = this.props,
-          children = _this$props6.children,
-          popup = _this$props6.popup;
+      var _this$props9 = this.props,
+          children = _this$props9.children,
+          popup = _this$props9.popup;
 
       var child = _react.default.Children.only(children);
 
-      var newChildProps = {}; // if (this.isContextMenuToShow()) {
-      //     newChildProps.onContextMenu = this.onContextMenu;
-      // } else {
-      //     newChildProps.onContextMenu = this.createTwoChains('onContextMenu');
-      // }
+      var newChildProps = {};
+
+      if (this.isContextMenuToShow()) {
+        newChildProps.onContextMenu = function (e) {
+          if (child.props.onContextMenu) {
+            child.props.onContextMenu(e);
+          }
+
+          _this3.clearDelayTimer();
+
+          _this3.onContextMenu(e);
+        };
+      }
 
       if (this.isClickToHide() || this.isClickToShow()) {
-        newChildProps.onClick = this.onClick; //newChildProps.onMouseDown = this.onMouseDown;
-        // newChildProps.onTouchStart = this.onTouchStart;
-      } else {// newChildProps.onClick = this.createTwoChains('onClick');
-          // newChildProps.onMouseDown = this.createTwoChains('onMouseDown');
-          // newChildProps.onTouchStart = this.createTwoChains('onTouchStart');
-        }
+        newChildProps.onClick = function (e) {
+          if (child.props.onClick) {
+            child.props.onClick(e);
+          }
+
+          _this3.clearDelayTimer();
+
+          _this3.onClick(e);
+        };
+      }
 
       if (this.isMouseEnterToShow()) {
-        newChildProps.onMouseEnter = this.onMouseEnter;
-      } else {//  newChildProps.onMouseEnter = this.createTwoChains('onMouseEnter');
+        newChildProps.onMouseEnter = function (e) {
+          if (child.props.onMouseEnter) {
+            child.props.onMouseEnter(e);
+          }
+
+          _this3.clearDelayTimer();
+
+          _this3.onMouseEnter(e);
+        };
       }
 
       if (this.isMouseLeaveToHide()) {
-        newChildProps.onMouseLeave = this.onMouseLeave;
-      } else {// newChildProps.onMouseLeave = this.createTwoChains('onMouseLeave');
+        newChildProps.onMouseLeave = function (e) {
+          if (child.props.onMouseLeave) {
+            child.props.onMouseLeave(e);
+          }
+
+          _this3.clearDelayTimer();
+
+          _this3.onMouseLeave(e);
+        };
+      }
+
+      if (this.isFocusToShow() || this.isBlurToHide()) {
+        newChildProps.onFocus = function (e) {
+          if (child.props.onFocus) {
+            child.props.onFocus(e);
+          }
+
+          _this3.clearDelayTimer();
+
+          _this3.onFocus(e);
+        };
+
+        newChildProps.onBlur = function (e) {
+          if (child.props.onBlur) {
+            child.props.onBlur(e);
+          }
+
+          _this3.clearDelayTimer();
+
+          _this3.onBlur(e);
+        };
       }
 
       this.promise = (0, _bplokjsDeferred.default)();
@@ -773,6 +899,7 @@ exports.default = Trigger;
   action: [],
   showAction: [],
   hideAction: [],
+  delay: 0,
   onPopupVisibleChange: noop
 });
 
@@ -804,4 +931,4 @@ module.exports = __webpack_require__(/*! D:\wamp\www\github-projects\react-widge
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.b222d2f0.js.map
+//# sourceMappingURL=index.edaab58c.js.map

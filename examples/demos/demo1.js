@@ -16,6 +16,7 @@ class TriggerBtn extends React.Component {
             <Trigger
                 offset={1}
                 action="hover"
+                delay={1000}
                 popup={<div className="trigger-container">{placement}</div>}
                 placement={placement}
             >
@@ -44,6 +45,15 @@ export default class DEMO extends Component {
                     <TriggerBtn placement="topLeft" />
                     <TriggerBtn placement="topCenter" />
                     <TriggerBtn placement="topRight" />
+                    <Trigger
+                        offset={1}
+                        delay={1000}
+                        action="focus"
+                        popup={<div className="trigger-container">rightCenter</div>}
+                        placement="rightCenter"
+                    >
+                        <input type="text" placeholder="focus show" />
+                    </Trigger>
                 </Layout.Header>
                 <Layout>
                     <Layout.Sider style={{
@@ -69,6 +79,16 @@ export default class DEMO extends Component {
                     <TriggerBtn placement="bottomLeft" />
                     <TriggerBtn placement="bottomCenter" />
                     <TriggerBtn placement="bottomRight" />
+                    <Trigger
+                        offset={1}
+                        delay={1000}
+                        action="contextMenu"
+                        popup={<div className="trigger-container">rightCenter</div>}
+                        placement="rightCenter"
+                    >
+
+                        <span>contextMenu show</span>
+                    </Trigger>
                 </Layout.Footer>
             </Layout >
         );
