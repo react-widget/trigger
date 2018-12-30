@@ -303,7 +303,7 @@ var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtim
 
 var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime-corejs2/helpers/possibleConstructorReturn.js"));
 
-var _getPrototypeOf3 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/getPrototypeOf */ "./node_modules/@babel/runtime-corejs2/helpers/getPrototypeOf.js"));
+var _getPrototypeOf4 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/getPrototypeOf */ "./node_modules/@babel/runtime-corejs2/helpers/getPrototypeOf.js"));
 
 var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/inherits */ "./node_modules/@babel/runtime-corejs2/helpers/inherits.js"));
 
@@ -315,27 +315,79 @@ var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_mo
 
 var _src = _interopRequireDefault(__webpack_require__(/*! ../../src */ "./src/index.js"));
 
+var _reactWidgetLayout = _interopRequireDefault(__webpack_require__(/*! react-widget-layout */ "./node_modules/react-widget-layout/index.js"));
+
+var TriggerBtn =
+/*#__PURE__*/
+function (_React$Component) {
+  (0, _inherits2.default)(TriggerBtn, _React$Component);
+
+  function TriggerBtn() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    (0, _classCallCheck2.default)(this, TriggerBtn);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf4.default)(TriggerBtn)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
+      visible: false
+    });
+    return _this;
+  }
+
+  (0, _createClass2.default)(TriggerBtn, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var placement = this.props.placement;
+      var visible = this.state.visible;
+      return _react.default.createElement(_src.default, {
+        offset: 1,
+        action: "hover",
+        popup: _react.default.createElement("div", {
+          className: "trigger-container"
+        }, placement),
+        placement: placement
+      }, _react.default.createElement("button", {
+        className: "t-btn",
+        onClick: function onClick() {
+          return _this2.setState({
+            visible: !visible
+          });
+        }
+      }, placement));
+    }
+  }]);
+  return TriggerBtn;
+}(_react.default.Component);
+
 var DEMO =
 /*#__PURE__*/
 function (_Component) {
   (0, _inherits2.default)(DEMO, _Component);
 
   function DEMO() {
-    var _getPrototypeOf2;
+    var _getPrototypeOf3;
 
-    var _this;
+    var _this3;
 
     (0, _classCallCheck2.default)(this, DEMO);
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
     }
 
-    _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf3.default)(DEMO)).call.apply(_getPrototypeOf2, [this].concat(args)));
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
+    _this3 = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf3 = (0, _getPrototypeOf4.default)(DEMO)).call.apply(_getPrototypeOf3, [this].concat(args)));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this3)), "state", {
       visible: true
     });
-    return _this;
+    return _this3;
   }
 
   (0, _createClass2.default)(DEMO, [{
@@ -344,8 +396,47 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var visible = this.state.visible;
-      return _react.default.createElement("div", null, _react.default.createElement("button", null, "\u786E\u8BA4A"), _react.default.createElement("button", null, "\u786E\u8BA4B"), _react.default.createElement(_src.default, null, _react.default.createElement("button", null, "\u786E\u8BA4C")));
+      return _react.default.createElement(_reactWidgetLayout.default, null, _react.default.createElement(_reactWidgetLayout.default.Header, {
+        style: {
+          textAlign: "center"
+        }
+      }, _react.default.createElement(TriggerBtn, {
+        placement: "topLeft"
+      }), _react.default.createElement(TriggerBtn, {
+        placement: "topCenter"
+      }), _react.default.createElement(TriggerBtn, {
+        placement: "topRight"
+      })), _react.default.createElement(_reactWidgetLayout.default, null, _react.default.createElement(_reactWidgetLayout.default.Sider, {
+        style: {
+          width: 80
+        }
+      }, _react.default.createElement(TriggerBtn, {
+        placement: "leftTop"
+      }), _react.default.createElement(TriggerBtn, {
+        placement: "leftCenter"
+      }), _react.default.createElement(TriggerBtn, {
+        placement: "leftBottom"
+      })), _react.default.createElement(_reactWidgetLayout.default.Content, null), _react.default.createElement(_reactWidgetLayout.default.Sider, {
+        style: {
+          width: 80
+        }
+      }, _react.default.createElement(TriggerBtn, {
+        placement: "rightTop"
+      }), _react.default.createElement(TriggerBtn, {
+        placement: "rightCenter"
+      }), _react.default.createElement(TriggerBtn, {
+        placement: "rightBottom"
+      }))), _react.default.createElement(_reactWidgetLayout.default.Footer, {
+        style: {
+          textAlign: "center"
+        }
+      }, _react.default.createElement(TriggerBtn, {
+        placement: "bottomLeft"
+      }), _react.default.createElement(TriggerBtn, {
+        placement: "bottomCenter"
+      }), _react.default.createElement(TriggerBtn, {
+        placement: "bottomRight"
+      })));
     }
   }]);
   return DEMO;
@@ -376,6 +467,10 @@ __webpack_require__(/*! ./style/index.scss */ "./examples/style/index.scss");
 __webpack_require__(/*! ./style/animate.scss */ "./examples/style/animate.scss");
 
 __webpack_require__(/*! ../src/style/index.scss */ "./src/style/index.scss");
+
+__webpack_require__(/*! react-widget-popup/lib/style/index.css */ "./node_modules/react-widget-popup/lib/style/index.css");
+
+__webpack_require__(/*! react-widget-layout/lib/style/index.css */ "./node_modules/react-widget-layout/lib/style/index.css");
 
 var _Demo = _interopRequireDefault(__webpack_require__(/*! ./Demo */ "./examples/Demo.js"));
 
@@ -424,6 +519,8 @@ exports.default = void 0;
 
 var _objectSpread2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/objectSpread */ "./node_modules/@babel/runtime-corejs2/helpers/objectSpread.js"));
 
+var _isArray = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/array/is-array */ "./node_modules/@babel/runtime-corejs2/core-js/array/is-array.js"));
+
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/classCallCheck */ "./node_modules/@babel/runtime-corejs2/helpers/classCallCheck.js"));
 
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/createClass */ "./node_modules/@babel/runtime-corejs2/helpers/createClass.js"));
@@ -450,7 +547,16 @@ var _bplokjsPlacement = _interopRequireDefault(__webpack_require__(/*! bplokjs-p
 
 var _bplokjsDeferred = _interopRequireDefault(__webpack_require__(/*! bplokjs-deferred */ "./node_modules/bplokjs-deferred/index.js"));
 
-var propTypes = {};
+var propTypes = {
+  offset: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.array]),
+  action: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.arrayOf(_propTypes.default.string)]),
+  showAction: _propTypes.default.any,
+  hideAction: _propTypes.default.any,
+  onPopupVisibleChange: _propTypes.default.func //afterPopupVisibleChange: PropTypes.func,
+
+};
+
+function noop() {}
 
 var Trigger =
 /*#__PURE__*/
@@ -469,7 +575,46 @@ function (_React$Component) {
     }
 
     _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf3.default)(Trigger)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
+      popupVisible: _this.props.defaultPopupVisible
+    });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "promise", null);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onClick", function (event) {
+      //this.fireEvents('onClick', event);
+      // //focus will trigger click
+      // if (this.focusTime) {
+      //     let preTime;
+      //     if (this.preClickTime && this.preTouchTime) {
+      //         preTime = Math.min(this.preClickTime, this.preTouchTime);
+      //     } else if (this.preClickTime) {
+      //         preTime = this.preClickTime;
+      //     } else if (this.preTouchTime) {
+      //         preTime = this.preTouchTime;
+      //     }
+      //     if (Math.abs(preTime - this.focusTime) < 20) {
+      //         return;
+      //     }
+      //     this.focusTime = 0;
+      // }
+      // this.preClickTime = 0;
+      // this.preTouchTime = 0;
+      event.preventDefault();
+      var nextVisible = !_this.state.popupVisible;
+
+      if (_this.isClickToHide() && !nextVisible || nextVisible && _this.isClickToShow()) {
+        _this.setPopupVisible(!_this.state.popupVisible);
+      }
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onMouseEnter", function (e) {
+      //this.fireEvents('onMouseEnter', e);
+      // this.delaySetPopupVisible(true, this.props.mouseEnterDelay);
+      _this.setPopupVisible(true);
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onMouseLeave", function (e) {
+      // this.fireEvents('onMouseLeave', e);
+      //  this.delaySetPopupVisible(false, this.props.mouseLeaveDelay);
+      _this.setPopupVisible(false);
+    });
     return _this;
   }
 
@@ -486,21 +631,134 @@ function (_React$Component) {
   }, {
     key: "resolvePopupDOM",
     value: function resolvePopupDOM() {
+      var _this$props = this.props,
+          placement = _this$props.placement,
+          offset = _this$props.offset;
+      var pOffset = [0, 0];
+
+      if (!(0, _isArray.default)(offset)) {
+        if (/^left/i.test(placement)) {
+          pOffset[0] = offset * -1;
+        }
+
+        if (/^right/i.test(placement)) {
+          pOffset[0] = offset;
+        }
+
+        if (/^top/i.test(placement)) {
+          pOffset[1] = offset * -1;
+        }
+
+        if (/^bottom/i.test(placement)) {
+          pOffset[1] = offset;
+        }
+      } else {
+        pOffset[0] = offset[0];
+        pOffset[1] = offset[1];
+      }
+
       if (this.promise) {
         this.promise.resolve((0, _objectSpread2.default)({
           of: _reactDom.default.findDOMNode(this)
-        }, (0, _bplokjsPlacement.default)('bottomLeft')));
+        }, (0, _bplokjsPlacement.default)(placement, pOffset)));
       }
+    }
+  }, {
+    key: "setPopupVisible",
+    value: function setPopupVisible(popupVisible) {
+      //this.clearDelayTimer();
+      if (this.state.popupVisible !== popupVisible) {
+        if (!('popupVisible' in this.props)) {
+          this.setState({
+            popupVisible: popupVisible
+          });
+        }
+
+        this.props.onPopupVisibleChange(popupVisible);
+      }
+    }
+  }, {
+    key: "isClickToShow",
+    value: function isClickToShow() {
+      var _this$props2 = this.props,
+          action = _this$props2.action,
+          showAction = _this$props2.showAction;
+      return action.indexOf('click') !== -1 || showAction.indexOf('click') !== -1;
+    }
+  }, {
+    key: "isClickToHide",
+    value: function isClickToHide() {
+      var _this$props3 = this.props,
+          action = _this$props3.action,
+          hideAction = _this$props3.hideAction;
+      return action.indexOf('click') !== -1 || hideAction.indexOf('click') !== -1;
+    }
+  }, {
+    key: "isMouseEnterToShow",
+    value: function isMouseEnterToShow() {
+      var _this$props4 = this.props,
+          action = _this$props4.action,
+          showAction = _this$props4.showAction;
+      return action.indexOf('hover') !== -1 || showAction.indexOf('mouseEnter') !== -1;
+    }
+  }, {
+    key: "isMouseLeaveToHide",
+    value: function isMouseLeaveToHide() {
+      var _this$props5 = this.props,
+          action = _this$props5.action,
+          hideAction = _this$props5.hideAction;
+      return action.indexOf('hover') !== -1 || hideAction.indexOf('mouseLeave') !== -1;
     }
   }, {
     key: "render",
     value: function render() {
-      var children = this.props.children;
+      var popupVisible = this.state.popupVisible;
+      var _this$props6 = this.props,
+          children = _this$props6.children,
+          popup = _this$props6.popup;
+
+      var child = _react.default.Children.only(children);
+
+      var newChildProps = {}; // if (this.isContextMenuToShow()) {
+      //     newChildProps.onContextMenu = this.onContextMenu;
+      // } else {
+      //     newChildProps.onContextMenu = this.createTwoChains('onContextMenu');
+      // }
+
+      if (this.isClickToHide() || this.isClickToShow()) {
+        newChildProps.onClick = this.onClick; //newChildProps.onMouseDown = this.onMouseDown;
+        // newChildProps.onTouchStart = this.onTouchStart;
+      } else {// newChildProps.onClick = this.createTwoChains('onClick');
+          // newChildProps.onMouseDown = this.createTwoChains('onMouseDown');
+          // newChildProps.onTouchStart = this.createTwoChains('onTouchStart');
+        }
+
+      if (this.isMouseEnterToShow()) {
+        newChildProps.onMouseEnter = this.onMouseEnter;
+      } else {//  newChildProps.onMouseEnter = this.createTwoChains('onMouseEnter');
+      }
+
+      if (this.isMouseLeaveToHide()) {
+        newChildProps.onMouseLeave = this.onMouseLeave;
+      } else {// newChildProps.onMouseLeave = this.createTwoChains('onMouseLeave');
+      }
+
       this.promise = (0, _bplokjsDeferred.default)();
-      return _react.default.createElement(_react.default.Fragment, null, children, _react.default.createElement(_reactWidgetPopup.default, {
+      var popupChildren = typeof popup === 'function' ? popup() : popup;
+
+      var trigger = _react.default.cloneElement(child, newChildProps);
+
+      return _react.default.createElement(_react.default.Fragment, null, trigger, _react.default.createElement(_reactWidgetPopup.default, {
         placement: this.promise,
-        visible: true
-      }, _react.default.createElement("div", null, "test...")));
+        visible: !!popupVisible
+      }, popupChildren));
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      return {
+        popupVisible: 'visible' in props ? props.visible : state.popupVisible
+      };
     }
   }]);
   return Trigger;
@@ -508,7 +766,15 @@ function (_React$Component) {
 
 exports.default = Trigger;
 (0, _defineProperty2.default)(Trigger, "propTypes", propTypes);
-(0, _defineProperty2.default)(Trigger, "defaultProps", {});
+(0, _defineProperty2.default)(Trigger, "defaultProps", {
+  placement: "bottomLeft",
+  offset: 0,
+  defaultPopupVisible: false,
+  action: [],
+  showAction: [],
+  hideAction: [],
+  onPopupVisibleChange: noop
+});
 
 /***/ }),
 
@@ -530,12 +796,12 @@ exports.default = Trigger;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\wamp64\www\github-project\react-widget\trigger\node_modules\packez\lib\fetchPolyfills.js */"./node_modules/packez/lib/fetchPolyfills.js");
-__webpack_require__(/*! D:\wamp64\www\github-project\react-widget\trigger\node_modules\packez\lib\polyfills.js */"./node_modules/packez/lib/polyfills.js");
-module.exports = __webpack_require__(/*! D:\wamp64\www\github-project\react-widget\trigger\examples\index.js */"./examples/index.js");
+__webpack_require__(/*! D:\wamp\www\github-projects\react-widget\trigger\node_modules\packez\lib\fetchPolyfills.js */"./node_modules/packez/lib/fetchPolyfills.js");
+__webpack_require__(/*! D:\wamp\www\github-projects\react-widget\trigger\node_modules\packez\lib\polyfills.js */"./node_modules/packez/lib/polyfills.js");
+module.exports = __webpack_require__(/*! D:\wamp\www\github-projects\react-widget\trigger\examples\index.js */"./examples/index.js");
 
 
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.5788ac8b.js.map
+//# sourceMappingURL=index.b222d2f0.js.map

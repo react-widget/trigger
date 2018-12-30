@@ -1,5 +1,29 @@
 import React, { Component } from 'react';
 import Trigger from '../../src';
+import Layout from 'react-widget-layout';
+
+
+class TriggerBtn extends React.Component {
+
+    state = {
+        visible: false
+    }
+
+    render() {
+        const { placement } = this.props;
+        const { visible } = this.state;
+        return (
+            <Trigger
+                offset={1}
+                action="hover"
+                popup={<div className="trigger-container">{placement}</div>}
+                placement={placement}
+            >
+                <button className="t-btn" onClick={() => this.setState({ visible: !visible })}>{placement}</button>
+            </Trigger>
+        );
+    }
+}
 
 export default class DEMO extends Component {
 
@@ -11,16 +35,42 @@ export default class DEMO extends Component {
     }
 
     render() {
-        const { visible } = this.state;
 
         return (
-            <div >
-                <button>确认A</button>
-                <button>确认B</button>
-                <Trigger>
-                    <button>确认C</button>
-                </Trigger>
-            </div >
+            <Layout>
+                <Layout.Header style={{
+                    textAlign: "center"
+                }}>
+                    <TriggerBtn placement="topLeft" />
+                    <TriggerBtn placement="topCenter" />
+                    <TriggerBtn placement="topRight" />
+                </Layout.Header>
+                <Layout>
+                    <Layout.Sider style={{
+                        width: 80
+                    }}>
+                        <TriggerBtn placement="leftTop" />
+                        <TriggerBtn placement="leftCenter" />
+                        <TriggerBtn placement="leftBottom" />
+                    </Layout.Sider>
+                    <Layout.Content>
+                    </Layout.Content>
+                    <Layout.Sider style={{
+                        width: 80
+                    }}>
+                        <TriggerBtn placement="rightTop" />
+                        <TriggerBtn placement="rightCenter" />
+                        <TriggerBtn placement="rightBottom" />
+                    </Layout.Sider>
+                </Layout>
+                <Layout.Footer style={{
+                    textAlign: "center"
+                }}>
+                    <TriggerBtn placement="bottomLeft" />
+                    <TriggerBtn placement="bottomCenter" />
+                    <TriggerBtn placement="bottomRight" />
+                </Layout.Footer>
+            </Layout >
         );
     }
 
