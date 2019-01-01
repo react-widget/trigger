@@ -23,7 +23,6 @@ const propTypes = {
     showAction: PropTypes.any,
     hideAction: PropTypes.any,
     onPopupVisibleChange: PropTypes.func,
-    //afterPopupVisibleChange: PropTypes.func,
     delay: PropTypes.oneOfType([
         PropTypes.number,
         PropTypes.object,
@@ -33,7 +32,6 @@ const propTypes = {
     prefixCls: PropTypes.string,
     popupClassName: PropTypes.string,
     popupMaskClassName: PropTypes.string,
-    //maskProps: PropTypes.object,
     defaultPopupVisible: PropTypes.bool,
     popupProps: PropTypes.object,
     mask: PropTypes.bool,
@@ -183,6 +181,10 @@ export default class Trigger extends React.Component {
             offset,
         } = this.props;
 
+        if (!this.promise) {
+            return;
+        }
+
         const pOffset = [0, 0];
 
         if (!Array.isArray(offset)) {
@@ -208,12 +210,11 @@ export default class Trigger extends React.Component {
             pOffset[1] = offset[1];
         }
 
-        if (this.promise) {
-            this.promise.resolve({
-                of: findDOMNode(this),
-                ...getPlacement(placement, pOffset)
-            });
-        }
+        this.promise.resolve({
+            of: findDOMNode(this),
+            ...getPlacement(placement, pOffset)
+        });
+
     }
 
     _setPopupVisible(popupVisible) {
@@ -365,6 +366,7 @@ export default class Trigger extends React.Component {
 
     getPopupComponent() {
         const {
+            placement,
             popup,
             prefixCls,
             popupClassName,
@@ -376,12 +378,16 @@ export default class Trigger extends React.Component {
             popupRootComponent: PopupRootComponent,
             destroyPopupOnHide,
             zIndex,
-            popupTransitionClassNames,
-            popupMaskTransitionClassNames,
         } = this.props;
         const { popupVisible } = this.state;
 
-        this.promise = Deferred();
+        let promise;
+
+        if (typeof placement === 'string') {
+            this.promise = promise = Deferred();
+        } else {
+            promise = placement;
+        }
 
         const maskProps = popupProps.maskProps || {};
 
@@ -396,7 +402,7 @@ export default class Trigger extends React.Component {
         return (
             <Popup
                 prefixCls={prefixCls}
-                placement={this.promise}
+                placement={promise}
                 unmountOnExit={destroyPopupOnHide}
                 style={newPopupStyle}
                 className={popupClassName}

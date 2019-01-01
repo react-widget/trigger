@@ -267,20 +267,24 @@ exports.default = void 0;
 
 var _demo = _interopRequireDefault(__webpack_require__(/*! ./demos/demo1 */ "./examples/demos/demo1.js"));
 
-// import Demo2 from './demos/Demo2';
+var _Demo = _interopRequireDefault(__webpack_require__(/*! ./demos/Demo2 */ "./examples/demos/Demo2.js"));
+
 // import Demo3 from './demos/Demo3';
 // import Demo4 from './demos/Demo4';
 var _default = [{
   label: '基本功能',
   component: _demo.default
+}, {
+  label: '自定义',
+  component: _Demo.default
 }];
 exports.default = _default;
 
 /***/ }),
 
-/***/ "./examples/demos/demo1.js":
+/***/ "./examples/demos/Demo2.js":
 /*!*********************************!*\
-  !*** ./examples/demos/demo1.js ***!
+  !*** ./examples/demos/Demo2.js ***!
   \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -312,6 +316,8 @@ var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(/*! @ba
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/defineProperty */ "./node_modules/@babel/runtime-corejs2/helpers/defineProperty.js"));
 
 var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var _reactDom = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 
 var _src = _interopRequireDefault(__webpack_require__(/*! ../../src */ "./src/index.js"));
 
@@ -350,7 +356,7 @@ function (_React$Component) {
       return _react.default.createElement(_src.default, {
         offset: 1,
         action: "hover",
-        delay: 1000,
+        delay: 100,
         popup: _react.default.createElement("div", {
           className: "trigger-container"
         }, placement),
@@ -366,6 +372,40 @@ function (_React$Component) {
     }
   }]);
   return TriggerBtn;
+}(_react.default.Component);
+
+var H1 =
+/*#__PURE__*/
+function (_React$Component2) {
+  (0, _inherits2.default)(H1, _React$Component2);
+
+  function H1() {
+    (0, _classCallCheck2.default)(this, H1);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf4.default)(H1).apply(this, arguments));
+  }
+
+  (0, _createClass2.default)(H1, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      console.log('h1 mount');
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      console.log('h1 update');
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      console.log('h1 unmount');
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("h1", null, "Portal");
+    }
+  }]);
+  return H1;
 }(_react.default.Component);
 
 var DEMO =
@@ -386,9 +426,270 @@ function (_Component) {
 
     _this3 = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf3 = (0, _getPrototypeOf4.default)(DEMO)).call.apply(_getPrototypeOf3, [this].concat(args)));
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this3)), "state", {
-      visible: true
+      current: null
     });
     return _this3;
+  }
+
+  (0, _createClass2.default)(DEMO, [{
+    key: "onClick",
+    value: function onClick(ct, e) {
+      this.setState({
+        current: ct
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var current = this.state.current;
+      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("button", {
+        onClick: this.onClick.bind(this, 'portal1')
+      }, "portal1"), _react.default.createElement("button", {
+        onClick: this.onClick.bind(this, 'portal2')
+      }, "portal2"), _react.default.createElement("div", {
+        id: "portal1",
+        style: {
+          border: "1px solid red",
+          padding: 10
+        }
+      }), _react.default.createElement("div", {
+        id: "portal2",
+        style: {
+          border: "1px solid green",
+          padding: 10
+        }
+      }), current ? (0, _reactDom.createPortal)(_react.default.createElement(H1, null), document.getElementById(current)) : null);
+    }
+  }]);
+  return DEMO;
+}(_react.Component);
+
+exports.default = DEMO;
+
+/***/ }),
+
+/***/ "./examples/demos/demo1.js":
+/*!*********************************!*\
+  !*** ./examples/demos/demo1.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireWildcard = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireWildcard */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireWildcard.js");
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/assertThisInitialized */ "./node_modules/@babel/runtime-corejs2/helpers/assertThisInitialized.js"));
+
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/defineProperty */ "./node_modules/@babel/runtime-corejs2/helpers/defineProperty.js"));
+
+var _objectSpread2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/objectSpread */ "./node_modules/@babel/runtime-corejs2/helpers/objectSpread.js"));
+
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/classCallCheck */ "./node_modules/@babel/runtime-corejs2/helpers/classCallCheck.js"));
+
+var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/createClass */ "./node_modules/@babel/runtime-corejs2/helpers/createClass.js"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime-corejs2/helpers/possibleConstructorReturn.js"));
+
+var _getPrototypeOf5 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/getPrototypeOf */ "./node_modules/@babel/runtime-corejs2/helpers/getPrototypeOf.js"));
+
+var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/inherits */ "./node_modules/@babel/runtime-corejs2/helpers/inherits.js"));
+
+var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var _reactDom = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+
+var _src = _interopRequireDefault(__webpack_require__(/*! ../../src */ "./src/index.js"));
+
+var _reactWidgetLayout = _interopRequireDefault(__webpack_require__(/*! react-widget-layout */ "./node_modules/react-widget-layout/index.js"));
+
+var _bplokjsDeferred = _interopRequireDefault(__webpack_require__(/*! bplokjs-deferred */ "./node_modules/bplokjs-deferred/index.js"));
+
+var _bplokjsPlacement = _interopRequireDefault(__webpack_require__(/*! bplokjs-placement */ "./node_modules/bplokjs-placement/index.js"));
+
+var animateClassNames = {
+  "appear": "animated",
+  "appearActive": "fadeBottomIn",
+  "enter": "animated",
+  "enterActive": "fadeBottomIn",
+  "enterDone": "",
+  "exit": "animated",
+  "exitActive": "fadeBottomOut",
+  "exitDone": ""
+};
+
+var Select =
+/*#__PURE__*/
+function (_React$Component) {
+  (0, _inherits2.default)(Select, _React$Component);
+
+  function Select() {
+    (0, _classCallCheck2.default)(this, Select);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf5.default)(Select).apply(this, arguments));
+  }
+
+  (0, _createClass2.default)(Select, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.promise.resolve((0, _objectSpread2.default)({
+        of: (0, _reactDom.findDOMNode)(this)
+      }, (0, _bplokjsPlacement.default)('bottomLeft')));
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      this.promise = (0, _bplokjsDeferred.default)();
+      return _react.default.createElement("div", {
+        className: "select"
+      }, _react.default.createElement("input", {
+        size: 10
+      }), _react.default.createElement(_src.default, {
+        placement: this.promise,
+        popup: "AAAAAAAA",
+        action: "click"
+      }, _react.default.createElement("span", {
+        className: "arrow"
+      }, "V")));
+    }
+  }]);
+  return Select;
+}(_react.default.Component);
+
+var TriggerBtn =
+/*#__PURE__*/
+function (_React$Component2) {
+  (0, _inherits2.default)(TriggerBtn, _React$Component2);
+
+  function TriggerBtn() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    (0, _classCallCheck2.default)(this, TriggerBtn);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf5.default)(TriggerBtn)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
+      visible: false
+    });
+    return _this;
+  }
+
+  (0, _createClass2.default)(TriggerBtn, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var placement = this.props.placement;
+      var visible = this.state.visible;
+      return _react.default.createElement(_src.default, {
+        offset: 0,
+        action: "hover",
+        delay: 100,
+        popup: _react.default.createElement("div", {
+          className: "trigger-container"
+        }, placement),
+        placement: placement
+      }, _react.default.createElement("button", {
+        className: "t-btn",
+        onClick: function onClick() {
+          return _this2.setState({
+            visible: !visible
+          });
+        }
+      }, placement));
+    }
+  }]);
+  return TriggerBtn;
+}(_react.default.Component);
+
+var AnimTriggerBtn =
+/*#__PURE__*/
+function (_React$Component3) {
+  (0, _inherits2.default)(AnimTriggerBtn, _React$Component3);
+
+  function AnimTriggerBtn() {
+    var _getPrototypeOf3;
+
+    var _this3;
+
+    (0, _classCallCheck2.default)(this, AnimTriggerBtn);
+
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    _this3 = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf3 = (0, _getPrototypeOf5.default)(AnimTriggerBtn)).call.apply(_getPrototypeOf3, [this].concat(args)));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this3)), "state", {
+      visible: false
+    });
+    return _this3;
+  }
+
+  (0, _createClass2.default)(AnimTriggerBtn, [{
+    key: "render",
+    value: function render() {
+      var _this4 = this;
+
+      var placement = this.props.placement;
+      var visible = this.state.visible;
+      return _react.default.createElement(_src.default, {
+        offset: 0,
+        action: "hover",
+        delay: 100,
+        popup: _react.default.createElement("div", {
+          className: "trigger-container"
+        }, placement),
+        placement: placement,
+        popupProps: {
+          timeout: 300,
+          transitionClassNames: animateClassNames
+        }
+      }, _react.default.createElement("button", {
+        className: "t-btn",
+        onClick: function onClick() {
+          return _this4.setState({
+            visible: !visible
+          });
+        }
+      }, "anim ", placement));
+    }
+  }]);
+  return AnimTriggerBtn;
+}(_react.default.Component);
+
+var DEMO =
+/*#__PURE__*/
+function (_Component) {
+  (0, _inherits2.default)(DEMO, _Component);
+
+  function DEMO() {
+    var _getPrototypeOf4;
+
+    var _this5;
+
+    (0, _classCallCheck2.default)(this, DEMO);
+
+    for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+      args[_key3] = arguments[_key3];
+    }
+
+    _this5 = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf4 = (0, _getPrototypeOf5.default)(DEMO)).call.apply(_getPrototypeOf4, [this].concat(args)));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this5)), "state", {
+      visible: true
+    });
+    return _this5;
   }
 
   (0, _createClass2.default)(DEMO, [{
@@ -407,18 +708,7 @@ function (_Component) {
         placement: "topCenter"
       }), _react.default.createElement(TriggerBtn, {
         placement: "topRight"
-      }), _react.default.createElement(_src.default, {
-        offset: 1,
-        delay: 1000,
-        action: "focus",
-        popup: _react.default.createElement("div", {
-          className: "trigger-container"
-        }, "rightCenter"),
-        placement: "rightCenter"
-      }, _react.default.createElement("input", {
-        type: "text",
-        placeholder: "focus show"
-      }))), _react.default.createElement(_reactWidgetLayout.default, null, _react.default.createElement(_reactWidgetLayout.default.Sider, {
+      })), _react.default.createElement(_reactWidgetLayout.default, null, _react.default.createElement(_reactWidgetLayout.default.Sider, {
         style: {
           width: 80
         }
@@ -448,15 +738,80 @@ function (_Component) {
         placement: "bottomCenter"
       }), _react.default.createElement(TriggerBtn, {
         placement: "bottomRight"
-      }), _react.default.createElement(_src.default, {
+      })), _react.default.createElement(_reactWidgetLayout.default.Footer, {
+        style: {
+          textAlign: "center"
+        }
+      }, _react.default.createElement(_src.default, {
         offset: 1,
-        delay: 1000,
+        delay: 0,
         action: "contextMenu",
         popup: _react.default.createElement("div", {
           className: "trigger-container"
-        }, "rightCenter"),
+        }, "contextMenu"),
         placement: "rightCenter"
-      }, _react.default.createElement("span", null, "contextMenu show"))));
+      }, _react.default.createElement("button", {
+        className: "t-btn"
+      }, "contextMenu show")), _react.default.createElement(_src.default, {
+        offset: 1,
+        delay: 100,
+        action: "click",
+        popup: _react.default.createElement("div", {
+          className: "trigger-container"
+        }, "click"),
+        placement: "rightCenter",
+        mask: true,
+        zIndex: 10
+      }, _react.default.createElement("button", {
+        className: "t-btn"
+      }, "click show")), _react.default.createElement(_src.default, {
+        offset: 1,
+        delay: 100,
+        action: "focus",
+        popup: _react.default.createElement("div", {
+          className: "trigger-container"
+        }, "rightCenter"),
+        placement: "rightCenter",
+        popupProps: {
+          timeout: 300,
+          transitionClassNames: animateClassNames
+        }
+      }, _react.default.createElement("input", {
+        type: "text",
+        placeholder: "focus show"
+      }))), _react.default.createElement(_reactWidgetLayout.default.Footer, {
+        style: {
+          textAlign: "center"
+        }
+      }, _react.default.createElement(AnimTriggerBtn, {
+        placement: "bottomLeft"
+      }), _react.default.createElement(AnimTriggerBtn, {
+        placement: "bottomCenter"
+      }), _react.default.createElement(AnimTriggerBtn, {
+        placement: "bottomRight"
+      }), _react.default.createElement(_src.default, {
+        offset: 1,
+        delay: 100,
+        action: "click",
+        popup: _react.default.createElement("div", {
+          className: "trigger-container"
+        }, "click animate show ", _react.default.createElement(TriggerBtn, {
+          placement: "bottomLeft"
+        })),
+        placement: "rightCenter",
+        mask: true,
+        zIndex: 10,
+        popupProps: {
+          timeout: 300,
+          transitionClassNames: animateClassNames
+        }
+      }, _react.default.createElement("button", {
+        className: "t-btn"
+      }, "click animate show"))), _react.default.createElement(_reactWidgetLayout.default.Footer, {
+        style: {
+          textAlign: "center"
+        }
+      }, _react.default.createElement(Select, null)));
     }
   }]);
   return DEMO;
@@ -520,10 +875,10 @@ _reactDom.default.render(_react.default.createElement(_Demo.default, null), demo
 
 /***/ }),
 
-/***/ "./src/index.js":
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
+/***/ "./src/PopupRootComponent.js":
+/*!***********************************!*\
+  !*** ./src/PopupRootComponent.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -536,6 +891,72 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+var _extends2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/extends */ "./node_modules/@babel/runtime-corejs2/helpers/extends.js"));
+
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/classCallCheck */ "./node_modules/@babel/runtime-corejs2/helpers/classCallCheck.js"));
+
+var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/createClass */ "./node_modules/@babel/runtime-corejs2/helpers/createClass.js"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime-corejs2/helpers/possibleConstructorReturn.js"));
+
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/getPrototypeOf */ "./node_modules/@babel/runtime-corejs2/helpers/getPrototypeOf.js"));
+
+var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/inherits */ "./node_modules/@babel/runtime-corejs2/helpers/inherits.js"));
+
+var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var PopupRootContainer =
+/*#__PURE__*/
+function (_React$Component) {
+  (0, _inherits2.default)(PopupRootContainer, _React$Component);
+
+  function PopupRootContainer() {
+    (0, _classCallCheck2.default)(this, PopupRootContainer);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(PopupRootContainer).apply(this, arguments));
+  }
+
+  (0, _createClass2.default)(PopupRootContainer, [{
+    key: "render",
+    value: function render() {
+      var style = {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        width: '100%'
+      };
+      return _react.default.createElement("div", (0, _extends2.default)({
+        style: style
+      }, this.props));
+    }
+  }]);
+  return PopupRootContainer;
+}(_react.default.Component);
+
+exports.default = PopupRootContainer;
+
+/***/ }),
+
+/***/ "./src/index.js":
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireWildcard = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireWildcard */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireWildcard.js");
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _extends2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/extends */ "./node_modules/@babel/runtime-corejs2/helpers/extends.js"));
 
 var _objectSpread2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/objectSpread */ "./node_modules/@babel/runtime-corejs2/helpers/objectSpread.js"));
 
@@ -557,24 +978,49 @@ var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/run
 
 var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
 
-var _reactDom = _interopRequireDefault(__webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js"));
+var _reactDom = _interopRequireWildcard(__webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js"));
 
 var _propTypes = _interopRequireDefault(__webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js"));
 
 var _reactWidgetPopup = _interopRequireDefault(__webpack_require__(/*! react-widget-popup */ "./node_modules/react-widget-popup/index.js"));
 
+var _reactWidgetPortal = _interopRequireDefault(__webpack_require__(/*! react-widget-portal */ "./node_modules/react-widget-portal/index.js"));
+
 var _bplokjsPlacement = _interopRequireDefault(__webpack_require__(/*! bplokjs-placement */ "./node_modules/bplokjs-placement/index.js"));
 
 var _bplokjsDeferred = _interopRequireDefault(__webpack_require__(/*! bplokjs-deferred */ "./node_modules/bplokjs-deferred/index.js"));
 
+var _events = __webpack_require__(/*! bplokjs-dom-utils/events */ "./node_modules/bplokjs-dom-utils/events/index.js");
+
+var _PopupRootComponent = _interopRequireDefault(__webpack_require__(/*! ./PopupRootComponent */ "./src/PopupRootComponent.js"));
+
+// import classnames from 'classnames';
+// import omit from 'omit.js';
+var contains = __webpack_require__(/*! bplokjs-dom-utils/contains */ "./node_modules/bplokjs-dom-utils/contains.js");
+
+var isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
 var propTypes = {
+  children: _propTypes.default.any,
   offset: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.array]),
   action: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.arrayOf(_propTypes.default.string)]),
   showAction: _propTypes.default.any,
   hideAction: _propTypes.default.any,
   onPopupVisibleChange: _propTypes.default.func,
-  //afterPopupVisibleChange: PropTypes.func,
-  delay: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.object])
+  delay: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.object]),
+  getPopupContainer: _propTypes.default.func,
+  getDocument: _propTypes.default.func,
+  prefixCls: _propTypes.default.string,
+  popupClassName: _propTypes.default.string,
+  popupMaskClassName: _propTypes.default.string,
+  defaultPopupVisible: _propTypes.default.bool,
+  popupProps: _propTypes.default.object,
+  mask: _propTypes.default.bool,
+  maskClosable: _propTypes.default.bool,
+  popupRootComponent: _propTypes.default.any,
+  destroyPopupOnHide: _propTypes.default.bool,
+  popupStyle: _propTypes.default.object,
+  popupMaskStyle: _propTypes.default.object,
+  zIndex: _propTypes.default.number
 };
 
 function noop() {}
@@ -599,8 +1045,23 @@ function (_React$Component) {
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
       popupVisible: _this.props.defaultPopupVisible
     });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "_popup", null);
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "delayTimer", null);
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "promise", null);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onDocumentClick", function (event) {
+      if (_this.props.mask && !_this.props.maskClosable) {
+        return;
+      }
+
+      var target = event.target;
+      var root = (0, _reactDom.findDOMNode)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)));
+
+      var popupNode = _this.getPopupDomNode();
+
+      if (!contains(root, target) && !contains(popupNode, target)) {
+        _this.close();
+      }
+    });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "isFocusToShow", function () {
       var _this$props = _this.props,
           action = _this$props.action,
@@ -629,18 +1090,92 @@ function (_React$Component) {
         _this.delaySetPopupVisible(false);
       }
     });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onContextMenuClose", function () {
+      if (_this.isContextMenuToShow()) {
+        _this.close();
+      }
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "savePopup", function (popup) {
+      _this._popup = popup;
+    });
     return _this;
   }
 
   (0, _createClass2.default)(Trigger, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.resolvePopupDOM();
+      if (this.state.popupVisible) {
+        this.resolvePopupDOM();
+      }
+
+      this.togglePopupCloseEvents();
     }
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
-      this.resolvePopupDOM();
+      if (this.state.popupVisible) {
+        this.resolvePopupDOM();
+      }
+
+      this.togglePopupCloseEvents();
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.clearDelayTimer();
+    }
+  }, {
+    key: "togglePopupCloseEvents",
+    value: function togglePopupCloseEvents() {
+      var getDocument = this.props.getDocument;
+      var popupVisible = this.state.popupVisible;
+
+      if (popupVisible) {
+        var currentDocument = getDocument();
+
+        if (!this.clickOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
+          this.clickOutsideHandler = (0, _events.listen)(currentDocument, 'mousedown', this.onDocumentClick);
+        }
+
+        if (!this.touchOutsideHandler && isMobile) {
+          this.touchOutsideHandler = (0, _events.listen)(currentDocument, 'click', this.onDocumentClick);
+        } // close popup when trigger type contains 'onContextMenu' and document is scrolling.
+
+
+        if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
+          this.contextMenuOutsideHandler1 = (0, _events.listen)(currentDocument, 'scroll', this.onContextMenuClose);
+        } // close popup when trigger type contains 'onContextMenu' and window is blur.
+
+
+        if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
+          this.contextMenuOutsideHandler2 = (0, _events.listen)(window, 'blur', this.onContextMenuClose);
+        }
+      } else {
+        this.clearOutsideHandler();
+      }
+    }
+  }, {
+    key: "clearOutsideHandler",
+    value: function clearOutsideHandler() {
+      if (this.clickOutsideHandler) {
+        this.clickOutsideHandler();
+        this.clickOutsideHandler = null;
+      }
+
+      if (this.contextMenuOutsideHandler1) {
+        this.contextMenuOutsideHandler1();
+        this.contextMenuOutsideHandler1 = null;
+      }
+
+      if (this.contextMenuOutsideHandler2) {
+        this.contextMenuOutsideHandler2();
+        this.contextMenuOutsideHandler2 = null;
+      }
+
+      if (this.touchOutsideHandler) {
+        this.touchOutsideHandler();
+        this.touchOutsideHandler = null;
+      }
     }
   }, {
     key: "resolvePopupDOM",
@@ -648,6 +1183,11 @@ function (_React$Component) {
       var _this$props3 = this.props,
           placement = _this$props3.placement,
           offset = _this$props3.offset;
+
+      if (!this.promise) {
+        return;
+      }
+
       var pOffset = [0, 0];
 
       if (!(0, _isArray.default)(offset)) {
@@ -671,15 +1211,13 @@ function (_React$Component) {
         pOffset[1] = offset[1];
       }
 
-      if (this.promise) {
-        this.promise.resolve((0, _objectSpread2.default)({
-          of: _reactDom.default.findDOMNode(this)
-        }, (0, _bplokjsPlacement.default)(placement, pOffset)));
-      }
+      this.promise.resolve((0, _objectSpread2.default)({
+        of: (0, _reactDom.findDOMNode)(this)
+      }, (0, _bplokjsPlacement.default)(placement, pOffset)));
     }
   }, {
-    key: "setPopupVisible",
-    value: function setPopupVisible(popupVisible) {
+    key: "_setPopupVisible",
+    value: function _setPopupVisible(popupVisible) {
       if (!('popupVisible' in this.props)) {
         this.setState({
           popupVisible: popupVisible
@@ -687,6 +1225,11 @@ function (_React$Component) {
       }
 
       this.props.onPopupVisibleChange(popupVisible);
+    }
+  }, {
+    key: "close",
+    value: function close() {
+      this.delaySetPopupVisible(false);
     }
   }, {
     key: "clearDelayTimer",
@@ -722,12 +1265,12 @@ function (_React$Component) {
 
       if (delay) {
         this.delayTimer = setTimeout(function () {
-          _this2.setPopupVisible(visible);
+          _this2._setPopupVisible(visible);
 
           _this2.delayTimer = null;
         }, delay);
       } else {
-        this.setPopupVisible(visible);
+        this._setPopupVisible(visible);
       }
     }
   }, {
@@ -786,16 +1329,88 @@ function (_React$Component) {
       }
     }
   }, {
+    key: "getPopup",
+    value: function getPopup() {
+      return this._popup;
+    }
+  }, {
+    key: "getPopupDomNode",
+    value: function getPopupDomNode() {
+      if (this._popup) {
+        return this._popup ? this._popup.getPopupDOM() : null;
+      }
+
+      return null;
+    }
+  }, {
+    key: "getPopupMaskDomNode",
+    value: function getPopupMaskDomNode() {
+      if (this._popup) {
+        return this._popup ? this._popup.getPopupMaskDOM() : null;
+      }
+
+      return null;
+    }
+  }, {
+    key: "getPopupComponent",
+    value: function getPopupComponent() {
+      var _this$props9 = this.props,
+          placement = _this$props9.placement,
+          popup = _this$props9.popup,
+          prefixCls = _this$props9.prefixCls,
+          popupClassName = _this$props9.popupClassName,
+          popupMaskClassName = _this$props9.popupMaskClassName,
+          popupProps = _this$props9.popupProps,
+          mask = _this$props9.mask,
+          popupStyle = _this$props9.popupStyle,
+          popupMaskStyle = _this$props9.popupMaskStyle,
+          PopupRootComponent = _this$props9.popupRootComponent,
+          destroyPopupOnHide = _this$props9.destroyPopupOnHide,
+          zIndex = _this$props9.zIndex;
+      var popupVisible = this.state.popupVisible;
+      var promise;
+
+      if (typeof placement === 'string') {
+        this.promise = promise = (0, _bplokjsDeferred.default)();
+      } else {
+        promise = placement;
+      }
+
+      var maskProps = popupProps.maskProps || {};
+      var newPopupStyle = (0, _objectSpread2.default)({}, popupStyle);
+      var newPopupMaskStyle = (0, _objectSpread2.default)({}, popupMaskStyle);
+
+      if (zIndex != null) {
+        newPopupStyle.zIndex = zIndex;
+        newPopupMaskStyle.zIndex = zIndex;
+      }
+
+      return _react.default.createElement(_reactWidgetPopup.default, (0, _extends2.default)({
+        prefixCls: prefixCls,
+        placement: promise,
+        unmountOnExit: destroyPopupOnHide,
+        style: newPopupStyle,
+        className: popupClassName
+      }, popupProps, {
+        rootComponent: PopupRootComponent,
+        mask: mask,
+        visible: popupVisible,
+        ref: this.savePopup,
+        maskProps: (0, _objectSpread2.default)({
+          style: newPopupMaskStyle,
+          className: popupMaskClassName
+        }, maskProps)
+      }), typeof popup === 'function' ? popup() : popup);
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this3 = this;
 
+      var getPopupContainer = this.props.getPopupContainer;
       var popupVisible = this.state.popupVisible;
-      var _this$props9 = this.props,
-          children = _this$props9.children,
-          popup = _this$props9.popup;
 
-      var child = _react.default.Children.only(children);
+      var child = _react.default.Children.only(this.props.children);
 
       var newChildProps = {};
 
@@ -869,15 +1484,17 @@ function (_React$Component) {
         };
       }
 
-      this.promise = (0, _bplokjsDeferred.default)();
-      var popupChildren = typeof popup === 'function' ? popup() : popup;
-
       var trigger = _react.default.cloneElement(child, newChildProps);
 
-      return _react.default.createElement(_react.default.Fragment, null, trigger, _react.default.createElement(_reactWidgetPopup.default, {
-        placement: this.promise,
-        visible: !!popupVisible
-      }, popupChildren));
+      var portal;
+
+      if (popupVisible || this._popup) {
+        portal = _react.default.createElement(_reactWidgetPortal.default, {
+          getContainer: getPopupContainer
+        }, this.getPopupComponent());
+      }
+
+      return _react.default.createElement(_react.default.Fragment, null, trigger, portal);
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -900,7 +1517,19 @@ exports.default = Trigger;
   showAction: [],
   hideAction: [],
   delay: 0,
-  onPopupVisibleChange: noop
+  onPopupVisibleChange: noop,
+  getDocument: function getDocument() {
+    return window.document;
+  },
+  prefixCls: "rw-trigger",
+  mask: false,
+  maskClosable: true,
+  destroyPopupOnHide: true,
+  popupProps: {},
+  popupRootComponent: _PopupRootComponent.default,
+  popupStyle: {},
+  popupMaskStyle: {},
+  zIndex: null
 });
 
 /***/ }),
@@ -931,4 +1560,4 @@ module.exports = __webpack_require__(/*! D:\wamp\www\github-projects\react-widge
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.edaab58c.js.map
+//# sourceMappingURL=index.0c1fb6f3.js.map

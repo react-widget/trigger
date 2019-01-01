@@ -895,6 +895,165 @@ module.exports = function domReady(fn) {
 
 /***/ }),
 
+/***/ "./node_modules/bplokjs-dom-utils/events/filter.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/bplokjs-dom-utils/events/filter.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = filterEvents;
+
+var _contains = _interopRequireDefault(__webpack_require__(/*! ../contains */ "./node_modules/bplokjs-dom-utils/contains.js"));
+
+var _querySelectorAll = _interopRequireDefault(__webpack_require__(/*! ../querySelectorAll */ "./node_modules/bplokjs-dom-utils/querySelectorAll.js"));
+
+function filterEvents(selector, handler) {
+  return function filterHandler(e) {
+    var top = e.currentTarget,
+        target = e.target,
+        matches = (0, _querySelectorAll.default)(top, selector);
+    if (matches.some(function (match) {
+      return (0, _contains.default)(match, target);
+    })) handler.call(this, e);
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/bplokjs-dom-utils/events/index.js":
+/*!********************************************************!*\
+  !*** ./node_modules/bplokjs-dom-utils/events/index.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
+var _on = _interopRequireDefault(__webpack_require__(/*! ./on */ "./node_modules/bplokjs-dom-utils/events/on.js"));
+
+var _off = _interopRequireDefault(__webpack_require__(/*! ./off */ "./node_modules/bplokjs-dom-utils/events/off.js"));
+
+var _filter = _interopRequireDefault(__webpack_require__(/*! ./filter */ "./node_modules/bplokjs-dom-utils/events/filter.js"));
+
+var _listen = _interopRequireDefault(__webpack_require__(/*! ./listen */ "./node_modules/bplokjs-dom-utils/events/listen.js"));
+
+module.exports = {
+  on: _on.default,
+  off: _off.default,
+  filter: _filter.default,
+  listen: _listen.default
+};
+
+/***/ }),
+
+/***/ "./node_modules/bplokjs-dom-utils/events/listen.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/bplokjs-dom-utils/events/listen.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = listen;
+
+var _on = _interopRequireDefault(__webpack_require__(/*! ./on */ "./node_modules/bplokjs-dom-utils/events/on.js"));
+
+var _off = _interopRequireDefault(__webpack_require__(/*! ./off */ "./node_modules/bplokjs-dom-utils/events/off.js"));
+
+function listen(node, eventName, handler, capture) {
+  (0, _on.default)(node, eventName, handler, capture);
+  return function () {
+    (0, _off.default)(node, eventName, handler, capture);
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/bplokjs-dom-utils/events/off.js":
+/*!******************************************************!*\
+  !*** ./node_modules/bplokjs-dom-utils/events/off.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var off = function () {
+  if (document.addEventListener) return function (node, eventName, handler, capture) {
+    return node.removeEventListener(eventName, handler, capture || false);
+  };else if (document.attachEvent) return function (node, eventName, handler) {
+    return node.detachEvent('on' + eventName, handler);
+  };
+}();
+
+var _default = off;
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/bplokjs-dom-utils/events/on.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/bplokjs-dom-utils/events/on.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var on = function () {
+  if (document.addEventListener) return function (node, eventName, handler, capture) {
+    return node.addEventListener(eventName, handler, capture || false);
+  };else if (document.attachEvent) return function (node, eventName, handler) {
+    return node.attachEvent('on' + eventName, function (e) {
+      e = e || window.event;
+      e.target = e.target || e.srcElement;
+      e.currentTarget = node;
+      handler.call(node, e);
+    });
+  };
+}();
+
+var _default = on;
+exports.default = _default;
+
+/***/ }),
+
 /***/ "./node_modules/bplokjs-dom-utils/matches.js":
 /*!***************************************************!*\
   !*** ./node_modules/bplokjs-dom-utils/matches.js ***!
@@ -1151,6 +1310,46 @@ module.exports = function position(elem) {
 
 /***/ }),
 
+/***/ "./node_modules/bplokjs-dom-utils/querySelectorAll.js":
+/*!************************************************************!*\
+  !*** ./node_modules/bplokjs-dom-utils/querySelectorAll.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+// Zepto.js
+// (c) 2010-2015 Thomas Fuchs
+// Zepto.js may be freely distributed under the MIT license.
+var simpleSelectorRE = /^[\w-]*$/; //[].slice.call(arraylike) -> ↓
+
+var toArray = Function.prototype.bind.call(Function.prototype.call, [].slice); //toArray = [].slice.call.bind([].slice)
+
+module.exports = function qsa(element, selector) {
+  var maybeID = selector[0] === '#',
+      maybeClass = selector[0] === '.',
+      nameOnly = maybeID || maybeClass ? selector.slice(1) : selector,
+      isSimple = simpleSelectorRE.test(nameOnly),
+      found;
+
+  if (isSimple) {
+    if (maybeID) {
+      element = element.getElementById ? element : document;
+      return (found = element.getElementById(nameOnly)) ? [found] : [];
+    }
+
+    if (element.getElementsByClassName && maybeClass) return toArray(element.getElementsByClassName(nameOnly));
+    return toArray(element.getElementsByTagName(selector));
+  }
+
+  return toArray(element.querySelectorAll(selector));
+};
+
+/***/ }),
+
 /***/ "./node_modules/bplokjs-dom-utils/scrollbarSize.js":
 /*!*********************************************************!*\
   !*** ./node_modules/bplokjs-dom-utils/scrollbarSize.js ***!
@@ -1347,12 +1546,19 @@ module.exports = __webpack_require__(/*! ./lib */ "./node_modules/bplokjs-jqlite
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = JQLite;
+
+var _parseFloat2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/parse-float */ "./node_modules/@babel/runtime-corejs2/core-js/parse-float.js"));
+
+var _iterator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/symbol/iterator */ "./node_modules/@babel/runtime-corejs2/core-js/symbol/iterator.js"));
+
+var _symbol = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/symbol */ "./node_modules/@babel/runtime-corejs2/core-js/symbol.js"));
 
 var _utils = __webpack_require__(/*! ./selector/utils */ "./node_modules/bplokjs-jqlite/lib/selector/utils.js");
 
@@ -1360,24 +1566,24 @@ var _domReady = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils
 
 var _parseHTML = _interopRequireDefault(__webpack_require__(/*! ./selector/parseHTML */ "./node_modules/bplokjs-jqlite/lib/selector/parseHTML.js"));
 
-var _find = _interopRequireDefault(__webpack_require__(/*! ./selector/find */ "./node_modules/bplokjs-jqlite/lib/selector/find.js"));
+var _find2 = _interopRequireDefault(__webpack_require__(/*! ./selector/find */ "./node_modules/bplokjs-jqlite/lib/selector/find.js"));
 
-var _offset = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/offset */ "./node_modules/bplokjs-dom-utils/offset/index.js"));
+var _offset2 = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/offset */ "./node_modules/bplokjs-dom-utils/offset/index.js"));
 
-var _position = _interopRequireDefault(__webpack_require__(/*! ./position */ "./node_modules/bplokjs-jqlite/lib/position.js"));
+var _position2 = _interopRequireDefault(__webpack_require__(/*! ./position */ "./node_modules/bplokjs-jqlite/lib/position.js"));
 
-var _offsetParent = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/offsetParent */ "./node_modules/bplokjs-dom-utils/offsetParent.js"));
+var _offsetParent2 = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/offsetParent */ "./node_modules/bplokjs-dom-utils/offsetParent.js"));
 
 var _matches = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/matches */ "./node_modules/bplokjs-dom-utils/matches.js"));
 
 var _classes = __webpack_require__(/*! bplokjs-dom-utils/classes */ "./node_modules/bplokjs-dom-utils/classes.js");
 
-var _closest = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/closest */ "./node_modules/bplokjs-dom-utils/closest.js"));
+var _closest2 = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/closest */ "./node_modules/bplokjs-dom-utils/closest.js"));
 
-var _css = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/css */ "./node_modules/bplokjs-dom-utils/css.js"));
+var _css2 = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/css */ "./node_modules/bplokjs-dom-utils/css.js"));
 
-const rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/;
-const BOOLEAN_ATTR = {};
+var rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/;
+var BOOLEAN_ATTR = {};
 (0, _utils.each)('multiple,selected,checked,disabled,readOnly,required,open'.split(','), function (i, value) {
   BOOLEAN_ATTR[(0, _utils.lowercase)(value)] = value;
 }); //////////////////////////////////////////////
@@ -1396,7 +1602,7 @@ function JQLite(selector, context) {
     return this;
   }
 
-  let match, elem;
+  var match, elem;
 
   if (typeof selector === "string") {
     if (selector[0] === "<" && selector[selector.length - 1] === ">" && selector.length >= 3) {
@@ -1428,7 +1634,7 @@ function JQLite(selector, context) {
       } // HANDLE: $(expr, $(...))
 
     } else if (!context) {
-      return (0, _find.default)(selector, document, new JQLite()); // HANDLE: $(expr, context)
+      return (0, _find2.default)(selector, document, new JQLite()); // HANDLE: $(expr, context)
       // (which is just equivalent to: $(context).find(expr)
     } else {
       return JQLite(context).find(selector);
@@ -1446,16 +1652,16 @@ function JQLite(selector, context) {
   return (0, _utils.makeArray)(selector, this);
 }
 
-const JQLitePrototype = JQLite.fn = JQLite.prototype = {
+var JQLitePrototype = JQLite.fn = JQLite.prototype = {
   ready: _domReady.default,
-  toString: function () {
-    const value = [];
+  toString: function toString() {
+    var value = [];
     (0, _utils.each)(this, function (i, e) {
       value.push('' + e);
     });
     return '[' + value.join(', ') + ']';
   },
-  eq: function (index) {
+  eq: function eq(index) {
     return index >= 0 ? JQLite(this[index]) : JQLite(this[this.length + index]);
   },
   length: 0,
@@ -1463,66 +1669,66 @@ const JQLitePrototype = JQLite.fn = JQLite.prototype = {
   sort: [].sort,
   splice: [].splice,
   extend: _utils.extend,
-  find: function (selector) {
-    let i,
+  find: function find(selector) {
+    var i,
         ret,
         len = this.length,
         self = this;
     ret = new JQLite();
 
     for (i = 0; i < len; i++) {
-      (0, _find.default)(selector, self[i], ret);
+      (0, _find2.default)(selector, self[i], ret);
     }
 
     return ret; //len > 1 ? jQuery.uniqueSort( ret ) : ret;	
   },
-  each: function (callback) {
+  each: function each(callback) {
     return (0, _utils.each)(this, callback);
   }
 };
 
-if (typeof Symbol === "function") {
-  let arr = [];
-  JQLitePrototype[Symbol.iterator] = arr[Symbol.iterator];
+if (typeof _symbol.default === "function") {
+  var arr = [];
+  JQLitePrototype[_iterator.default] = arr[_iterator.default];
 }
 
 function jqLiteWidthOrHeightCreator(type) {
-  const funcName = (0, _utils.lowercase)(type);
+  var funcName = (0, _utils.lowercase)(type);
   return function (elem, value) {
     if ((0, _utils.isWindow)(elem)) {
       return elem.document.documentElement["client" + type];
     }
 
     if (elem.nodeType === _utils.NODE_TYPE_DOCUMENT) {
-      const doc = elem.documentElement; // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height],
+      var doc = elem.documentElement; // Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height],
       // whichever is greatest
 
       return Math.max(elem.body["scroll" + type], doc["scroll" + type], elem.body["offset" + type], doc["offset" + type], doc["client" + type]);
     }
 
-    const exp1 = type === 'Width' ? 'Left' : 'Top';
-    const exp2 = type === 'Width' ? 'Right' : 'Bottom'; //getter
+    var exp1 = type === 'Width' ? 'Left' : 'Top';
+    var exp2 = type === 'Width' ? 'Right' : 'Bottom'; //getter
 
     if (value === undefined) {
-      return elem.offsetWidth - parseFloat((0, _css.default)(elem, `border${exp1}${type}`)) - parseFloat((0, _css.default)(elem, `padding${exp1}`)) - parseFloat((0, _css.default)(elem, `padding${exp2}`)) - parseFloat((0, _css.default)(elem, `border${exp2}${type}`)); //setter		
+      return elem.offsetWidth - (0, _parseFloat2.default)((0, _css2.default)(elem, "border".concat(exp1).concat(type))) - (0, _parseFloat2.default)((0, _css2.default)(elem, "padding".concat(exp1))) - (0, _parseFloat2.default)((0, _css2.default)(elem, "padding".concat(exp2))) - (0, _parseFloat2.default)((0, _css2.default)(elem, "border".concat(exp2).concat(type))); //setter		
     } else {
-      const isBorderBox = (0, _css.default)(elem, "boxSizing") === "border-box";
-      const borderOrPadding = parseFloat((0, _css.default)(elem, `border${exp1}${type}`)) + parseFloat((0, _css.default)(elem, `padding${exp1}`)) + parseFloat((0, _css.default)(elem, `padding${exp2}`)) + parseFloat((0, _css.default)(elem, `border${exp2}${type}`));
-      (0, _css.default)(elem, funcName, !isBorderBox || value === "" ? value : (value || 0) - borderOrPadding);
+      var isBorderBox = (0, _css2.default)(elem, "boxSizing") === "border-box";
+      var borderOrPadding = (0, _parseFloat2.default)((0, _css2.default)(elem, "border".concat(exp1).concat(type))) + (0, _parseFloat2.default)((0, _css2.default)(elem, "padding".concat(exp1))) + (0, _parseFloat2.default)((0, _css2.default)(elem, "padding".concat(exp2))) + (0, _parseFloat2.default)((0, _css2.default)(elem, "border".concat(exp2).concat(type)));
+      (0, _css2.default)(elem, funcName, !isBorderBox || value === "" ? value : (value || 0) - borderOrPadding);
     }
   };
 }
 
 function jqLiteAttr(element, name, value) {
-  let ret;
-  const nodeType = element.nodeType;
+  var ret;
+  var nodeType = element.nodeType;
 
   if (nodeType === _utils.NODE_TYPE_TEXT || nodeType === _utils.NODE_TYPE_ATTRIBUTE || nodeType === _utils.NODE_TYPE_COMMENT || !element.getAttribute) {
     return;
   }
 
-  const lowercasedName = (0, _utils.lowercase)(name);
-  const isBooleanAttr = BOOLEAN_ATTR[lowercasedName];
+  var lowercasedName = (0, _utils.lowercase)(name);
+  var isBooleanAttr = BOOLEAN_ATTR[lowercasedName];
 
   if ((0, _utils.isDefined)(value)) {
     // setter
@@ -1554,37 +1760,37 @@ function jqLiteProp(element, name, value) {
 
 
 (0, _utils.each)({
-  append: function (node) {
+  append: function append(node) {
     node = new JQLite(node);
     return this.each(function (i, elem) {
-      const nodeType = elem.nodeType;
+      var nodeType = elem.nodeType;
       if (nodeType !== _utils.NODE_TYPE_ELEMENT && nodeType !== _utils.NODE_TYPE_DOCUMENT_FRAGMENT) return;
 
-      for (let i = 0, ii = node.length; i < ii; i++) {
-        const child = node[i];
+      for (var _i = 0, ii = node.length; _i < ii; _i++) {
+        var child = node[_i];
         elem.appendChild(child);
       }
     });
   },
-  prepend: function (node) {
+  prepend: function prepend(node) {
     node = new JQLite(node);
     return this.each(function (i, elem) {
       if (elem.nodeType === _utils.NODE_TYPE_ELEMENT) {
-        const index = elem.firstChild;
+        var index = elem.firstChild;
         (0, _utils.each)(node, function (i, child) {
           elem.insertBefore(child, index);
         });
       }
     });
   },
-  remove: function () {
+  remove: function remove() {
     return this.each(function (elem) {
-      const parent = elem.parentNode;
+      var parent = elem.parentNode;
       if (parent) parent.removeChild(elem);
     });
   },
-  children: function () {
-    const children = [];
+  children: function children() {
+    var children = [];
     this.each(function (i, elem) {
       (0, _utils.each)(elem.childNodes, function (ii, element) {
         if (element.nodeType === _utils.NODE_TYPE_ELEMENT) {
@@ -1594,42 +1800,42 @@ function jqLiteProp(element, name, value) {
     });
     return children;
   },
-  width: function (value) {
-    const length = this.length;
+  width: function width(value) {
+    var length = this.length;
     if (!length) return value === undefined ? undefined : this;
-    const func = jqLiteWidthOrHeightCreator('Width');
+    var func = jqLiteWidthOrHeightCreator('Width');
 
     if (value === undefined) {
-      const elem = this[0];
+      var elem = this[0];
       return func(elem);
     } else {
-      for (let i = 0; i < length; i++) {
+      for (var i = 0; i < length; i++) {
         func(this[i], value);
       }
     }
 
     return this;
   },
-  height: function (value) {
-    const length = this.length;
+  height: function height(value) {
+    var length = this.length;
     if (!length) return value === undefined ? undefined : this;
-    const func = jqLiteWidthOrHeightCreator('Height');
+    var func = jqLiteWidthOrHeightCreator('Height');
 
     if (value === undefined) {
-      const elem = this[0];
+      var elem = this[0];
       return func(elem);
     } else {
-      for (let i = 0; i < length; i++) {
+      for (var i = 0; i < length; i++) {
         func(this[i], value);
       }
     }
 
     return this;
   },
-  outerWidth: function () {
-    const length = this.length;
+  outerWidth: function outerWidth() {
+    var length = this.length;
     if (!length) return;
-    const elem = this[0];
+    var elem = this[0];
 
     if ((0, _utils.isWindow)(elem)) {
       return elem.innerWidth;
@@ -1638,10 +1844,10 @@ function jqLiteProp(element, name, value) {
     if (elem.nodeType === _utils.NODE_TYPE_DOCUMENT) return this.width();
     return elem.offsetWidth;
   },
-  outerHeight: function () {
-    const length = this.length;
+  outerHeight: function outerHeight() {
+    var length = this.length;
     if (!length) return;
-    const elem = this[0];
+    var elem = this[0];
 
     if ((0, _utils.isWindow)(elem)) {
       return elem.innerHeight;
@@ -1650,24 +1856,24 @@ function jqLiteProp(element, name, value) {
     if (elem.nodeType === _utils.NODE_TYPE_DOCUMENT) return this.height();
     return elem.offsetHeight;
   },
-  offset: function (coordinates) {
+  offset: function offset(coordinates) {
     if (coordinates) {
       return this.each(function (i, elem) {
-        (0, _offset.default)(elem, coordinates);
+        (0, _offset2.default)(elem, coordinates);
       });
     }
 
     if (!this.length) return;
-    return (0, _offset.default)(this[0]);
+    return (0, _offset2.default)(this[0]);
   },
-  position: function () {
+  position: function position() {
     if (!this.length) return;
-    return (0, _position.default)(this[0]);
+    return (0, _position2.default)(this[0]);
   },
-  css: function (key, value) {
+  css: function css(key, value) {
     if (value !== undefined) {
       return this.each(function (i, elem) {
-        (0, _css.default)(elem, key, value);
+        (0, _css2.default)(elem, key, value);
       });
     } else if ((0, _utils.isObject)(key)) {
       for (var k in key) {
@@ -1676,16 +1882,16 @@ function jqLiteProp(element, name, value) {
 
       return this;
     } else if (this.length) {
-      return (0, _css.default)(this[0], key);
+      return (0, _css2.default)(this[0], key);
     }
   },
-  attr: function (key, value) {
+  attr: function attr(key, value) {
     if (value !== undefined) {
       return this.each(function (i, elem) {
         jqLiteAttr(elem, key, value);
       });
     } else if ((0, _utils.isObject)(key)) {
-      for (let k in key) {
+      for (var k in key) {
         this.attr(k, key[k]);
       }
 
@@ -1694,12 +1900,12 @@ function jqLiteProp(element, name, value) {
       return jqLiteAttr(this[0], key);
     }
   },
-  removeAttr: function (name) {
+  removeAttr: function removeAttr(name) {
     return this.each(function (i, elem) {
       elem.removeAttribute(name);
     });
   },
-  prop: function (key, value) {
+  prop: function prop(key, value) {
     if (value !== undefined) {
       return this.each(function (i, elem) {
         jqLiteProp(elem, key, value);
@@ -1708,8 +1914,8 @@ function jqLiteProp(element, name, value) {
       return jqLiteProp(this[0], key, value);
     }
   },
-  filter: function (selector) {
-    let elems = new JQLite(),
+  filter: function filter(selector) {
+    var elems = new JQLite(),
         elem,
         i,
         len;
@@ -1734,19 +1940,19 @@ function jqLiteProp(element, name, value) {
 
     return elems;
   },
-  closest: function (selector) {
-    const nodes = [];
+  closest: function closest(selector) {
+    var nodes = [];
     this.each(function (i, elem) {
-      const node = (0, _closest.default)(elem, selector);
+      var node = (0, _closest2.default)(elem, selector);
       if (node) nodes.push(node);
     });
     return new JQLite(nodes);
   },
-  offsetParent: function () {
-    if (this.length) return (0, _offsetParent.default)(this[0]);
+  offsetParent: function offsetParent() {
+    if (this.length) return (0, _offsetParent2.default)(this[0]);
   },
-  hasClass: function (className) {
-    for (let i = 0, n = this.length; i < n; i++) {
+  hasClass: function hasClass(className) {
+    for (var i = 0, n = this.length; i < n; i++) {
       if ((0, _classes.hasClass)(this[i], className)) {
         return true;
       }
@@ -1754,25 +1960,31 @@ function jqLiteProp(element, name, value) {
 
     return false;
   },
-  addClass: function (className) {
+  addClass: function addClass(className) {
     if (!className) return this;
     return this.each(function (i, elem) {
-      className.split(/\s+/).forEach(name => (0, _classes.addClass)(elem, name));
+      className.split(/\s+/).forEach(function (name) {
+        return (0, _classes.addClass)(elem, name);
+      });
     });
   },
-  removeClass: function (className) {
+  removeClass: function removeClass(className) {
     if (!className) return this;
     return this.each(function (i, elem) {
-      className.split(/\s+/).forEach(name => (0, _classes.removeClass)(elem, name));
+      className.split(/\s+/).forEach(function (name) {
+        return (0, _classes.removeClass)(elem, name);
+      });
     });
   },
-  toggleClass: function (className) {
+  toggleClass: function toggleClass(className) {
     if (!className) return this;
     return this.each(function (i, elem) {
-      className.split(/\s+/).forEach(name => (0, _classes.toggleClass)(elem, name));
+      className.split(/\s+/).forEach(function (name) {
+        return (0, _classes.toggleClass)(elem, name);
+      });
     });
   },
-  html: function (value) {
+  html: function html(value) {
     if ((0, _utils.isUndefined)(value)) {
       if (this.length) return this[0].innerHTML;
     } else {
@@ -1781,7 +1993,7 @@ function jqLiteProp(element, name, value) {
       });
     }
   },
-  empty: function () {
+  empty: function empty() {
     return this.each(function (i, elem) {
       while (elem.firstChild) {
         elem.removeChild(elem.firstChild);
@@ -1798,13 +2010,13 @@ function jqLiteProp(element, name, value) {
   scrollLeft: "pageXOffset",
   scrollTop: "pageYOffset"
 }, function (method, prop) {
-  const top = "pageYOffset" === prop;
+  var top = "pageYOffset" === prop;
 
   JQLitePrototype[method] = function (val) {
     //getter
     if (val === undefined) {
-      let win;
-      const elem = this[0];
+      var win;
+      var elem = this[0];
       if (!elem) return;
 
       if ((0, _utils.isWindow)(elem)) {
@@ -1818,7 +2030,7 @@ function jqLiteProp(element, name, value) {
 
 
     return this.each(function (i, elem) {
-      let win;
+      var win;
 
       if ((0, _utils.isWindow)(elem)) {
         win = elem;
@@ -1839,7 +2051,7 @@ function jqLiteProp(element, name, value) {
   extend: _utils.extend,
   each: _utils.each,
   isWindow: _utils.isWindow,
-  css: _css.default
+  css: _css2.default
 }, function (name, func) {
   JQLite[name] = func;
 });
@@ -1856,12 +2068,15 @@ function jqLiteProp(element, name, value) {
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = position;
+
+var _parseFloat2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/parse-float */ "./node_modules/@babel/runtime-corejs2/core-js/parse-float.js"));
 
 var _css = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/css */ "./node_modules/bplokjs-dom-utils/css.js"));
 
@@ -1893,15 +2108,15 @@ function position(elem) {
     if (offsetParent && offsetParent !== elem && offsetParent.nodeType === 1) {
       // Incorporate borders into its offset, since they are outside its content origin
       parentOffset = (0, _getOffset.default)(offsetParent);
-      parentOffset.top += parseFloat((0, _css.default)(offsetParent, "borderTopWidth")) || 0;
-      parentOffset.left += parseFloat((0, _css.default)(offsetParent, "borderLeftWidth")) || 0;
+      parentOffset.top += (0, _parseFloat2.default)((0, _css.default)(offsetParent, "borderTopWidth")) || 0;
+      parentOffset.left += (0, _parseFloat2.default)((0, _css.default)(offsetParent, "borderLeftWidth")) || 0;
     }
   } // Subtract parent offsets and element margins
 
 
   return {
-    top: offset.top - parentOffset.top - (parseFloat((0, _css.default)(elem, "marginTop")) || 0),
-    left: offset.left - parentOffset.left - (parseFloat((0, _css.default)(elem, "marginLeft")) || 0)
+    top: offset.top - parentOffset.top - ((0, _parseFloat2.default)((0, _css.default)(elem, "marginTop")) || 0),
+    left: offset.left - parentOffset.left - ((0, _parseFloat2.default)((0, _css.default)(elem, "marginLeft")) || 0)
   };
 }
 
@@ -1917,7 +2132,8 @@ function position(elem) {
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1929,7 +2145,7 @@ var _matches = _interopRequireDefault(__webpack_require__(/*! bplokjs-dom-utils/
 var _utils = __webpack_require__(/*! ./utils */ "./node_modules/bplokjs-jqlite/lib/selector/utils.js");
 
 function find(selector, context, results, seed) {
-  let elem,
+  var elem,
       nodeType,
       i = 0;
   results = results || [];
@@ -1972,6 +2188,7 @@ exports.default = _default;
 "use strict";
 
 
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -1979,11 +2196,11 @@ exports.default = parseHTML;
 
 var _utils = __webpack_require__(/*! ./utils */ "./node_modules/bplokjs-jqlite/lib/selector/utils.js");
 
-const SINGLE_TAG_REGEXP = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;
-const HTML_REGEXP = /<|&#?\w+;/;
-const TAG_NAME_REGEXP = /<([\w:-]+)/;
-const XHTML_TAG_REGEXP = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi;
-const wrapMap = {
+var SINGLE_TAG_REGEXP = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;
+var HTML_REGEXP = /<|&#?\w+;/;
+var TAG_NAME_REGEXP = /<([\w:-]+)/;
+var XHTML_TAG_REGEXP = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi;
+var wrapMap = {
   'option': [1, '<select multiple="multiple">', '</select>'],
   'thead': [1, '<table>', '</table>'],
   'col': [2, '<table><colgroup>', '</colgroup></table>'],
@@ -2000,7 +2217,7 @@ function jqLiteIsTextNode(html) {
 }
 
 function jqLiteBuildFragment(html, context) {
-  let tmp,
+  var tmp,
       tag,
       wrap,
       fragment = context.createDocumentFragment(),
@@ -2046,7 +2263,7 @@ function parseHTML(data, context
   }
 
   context = context || window.document;
-  let parsed;
+  var parsed;
 
   if (parsed = SINGLE_TAG_REGEXP.exec(data)) {
     return [context.createElement(parsed[1])];
@@ -2071,6 +2288,9 @@ function parseHTML(data, context
 "use strict";
 
 
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -2089,19 +2309,26 @@ exports.isDefined = isDefined;
 exports.isString = isString;
 exports.lowercase = lowercase;
 exports.NODE_TYPE_DOCUMENT_FRAGMENT = exports.NODE_TYPE_DOCUMENT = exports.NODE_TYPE_COMMENT = exports.NODE_TYPE_TEXT = exports.NODE_TYPE_ATTRIBUTE = exports.NODE_TYPE_ELEMENT = exports.getProto = exports.ObjectFunctionString = exports.fnToString = exports.hasOwn = exports.toString = exports.push = void 0;
-const push = Array.prototype.push;
+
+var _isArray = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/array/is-array */ "./node_modules/@babel/runtime-corejs2/core-js/array/is-array.js"));
+
+var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/typeof */ "./node_modules/@babel/runtime-corejs2/helpers/typeof.js"));
+
+var _getPrototypeOf = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/object/get-prototype-of */ "./node_modules/@babel/runtime-corejs2/core-js/object/get-prototype-of.js"));
+
+var push = Array.prototype.push;
 exports.push = push;
-const toString = Object.prototype.toString;
+var toString = Object.prototype.toString;
 exports.toString = toString;
-const hasOwn = Object.prototype.hasOwnProperty;
+var hasOwn = Object.prototype.hasOwnProperty;
 exports.hasOwn = hasOwn;
-const fnToString = hasOwn.toString;
+var fnToString = hasOwn.toString;
 exports.fnToString = fnToString;
-const ObjectFunctionString = fnToString.call(Object);
+var ObjectFunctionString = fnToString.call(Object);
 exports.ObjectFunctionString = ObjectFunctionString;
-const getProto = Object.getPrototypeOf;
+var getProto = _getPrototypeOf.default;
 exports.getProto = getProto;
-const class2type = {};
+var class2type = {};
 each("Boolean Number String Function Array Date RegExp Object Error Symbol".split(" "), function (i, name) {
   class2type["[object " + name + "]"] = name.toLowerCase();
 });
@@ -2111,11 +2338,11 @@ function toType(obj) {
     return obj + "";
   }
 
-  return typeof obj === "object" || typeof obj === "function" ? class2type[toString.call(obj)] || "object" : typeof obj;
+  return (0, _typeof2.default)(obj) === "object" || typeof obj === "function" ? class2type[toString.call(obj)] || "object" : (0, _typeof2.default)(obj);
 }
 
 function isArrayLike(obj) {
-  let length = !!obj && "length" in obj && obj.length,
+  var length = !!obj && "length" in obj && obj.length,
       type = toType(obj);
 
   if (isFunction(obj) || isWindow(obj)) {
@@ -2132,7 +2359,7 @@ function isWindow(obj) {
 }
 
 function isPlainObject(obj) {
-  let proto, Ctor;
+  var proto, Ctor;
 
   if (!obj || toString.call(obj) !== "[object Object]") {
     return false;
@@ -2153,7 +2380,7 @@ function isFunction(obj) {
 }
 
 function makeArray(arr, results) {
-  let ret = results || [];
+  var ret = results || [];
 
   if (arr != null) {
     if (isArrayLike(Object(arr))) {
@@ -2167,7 +2394,7 @@ function makeArray(arr, results) {
 }
 
 function merge(first, second) {
-  let len = +second.length,
+  var len = +second.length,
       j = 0,
       i = first.length;
 
@@ -2180,7 +2407,7 @@ function merge(first, second) {
 }
 
 function each(obj, callback) {
-  let length,
+  var length,
       i = 0;
 
   if (isArrayLike(obj)) {
@@ -2203,7 +2430,7 @@ function each(obj, callback) {
 }
 
 function extend() {
-  let options,
+  var options,
       name,
       src,
       copy,
@@ -2222,7 +2449,7 @@ function extend() {
   } // Handle case when target is a string or something (possible in deep copy)
 
 
-  if (typeof target !== "object" && !isFunction(target)) {
+  if ((0, _typeof2.default)(target) !== "object" && !isFunction(target)) {
     target = {};
   } // Extend jQuery itself if only one argument is passed
 
@@ -2245,10 +2472,10 @@ function extend() {
         } // Recurse if we're merging plain objects or arrays
 
 
-        if (deep && copy && (isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
+        if (deep && copy && (isPlainObject(copy) || (copyIsArray = (0, _isArray.default)(copy)))) {
           if (copyIsArray) {
             copyIsArray = false;
-            clone = src && Array.isArray(src) ? src : [];
+            clone = src && (0, _isArray.default)(src) ? src : [];
           } else {
             clone = src && isPlainObject(src) ? src : {};
           } // Never move original objects, clone them
@@ -2266,21 +2493,21 @@ function extend() {
   return target;
 }
 
-const NODE_TYPE_ELEMENT = 1;
+var NODE_TYPE_ELEMENT = 1;
 exports.NODE_TYPE_ELEMENT = NODE_TYPE_ELEMENT;
-const NODE_TYPE_ATTRIBUTE = 2;
+var NODE_TYPE_ATTRIBUTE = 2;
 exports.NODE_TYPE_ATTRIBUTE = NODE_TYPE_ATTRIBUTE;
-const NODE_TYPE_TEXT = 3;
+var NODE_TYPE_TEXT = 3;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
-const NODE_TYPE_COMMENT = 8;
+var NODE_TYPE_COMMENT = 8;
 exports.NODE_TYPE_COMMENT = NODE_TYPE_COMMENT;
-const NODE_TYPE_DOCUMENT = 9;
+var NODE_TYPE_DOCUMENT = 9;
 exports.NODE_TYPE_DOCUMENT = NODE_TYPE_DOCUMENT;
-const NODE_TYPE_DOCUMENT_FRAGMENT = 11;
+var NODE_TYPE_DOCUMENT_FRAGMENT = 11;
 exports.NODE_TYPE_DOCUMENT_FRAGMENT = NODE_TYPE_DOCUMENT_FRAGMENT;
 
 function isObject(value) {
-  return value !== null && typeof value === 'object';
+  return value !== null && (0, _typeof2.default)(value) === 'object';
 }
 
 function isUndefined(value) {
@@ -2319,7 +2546,7 @@ function getOffset(h, v, offset) {
         v += reg.test(offset[1]) ? offset[1] : '+' + offset[1];
     }
 
-    return `${h} ${v}`;
+    return [h, v].join(' ');
 }
 
 // at: point(at)
@@ -29553,19 +29780,19 @@ function (_React$Component) {
       var popup = this.getPopupDOM();
 
       if ('left' in pos) {
-        popup.style.left = ~~pos.left + 'px';
+        popup.style.left = pos.left.toFixed() + 'px';
       }
 
       if ('top' in pos) {
-        popup.style.top = ~~pos.top + 'px';
+        popup.style.top = pos.top.toFixed() + 'px';
       }
 
       if ('right' in pos) {
-        popup.style.right = ~~pos.right + 'px';
+        popup.style.right = pos.right.toFixed() + 'px';
       }
 
       if ('bottom' in pos) {
-        popup.style.bottom = ~~pos.bottom + 'px';
+        popup.style.bottom = pos.bottom.toFixed() + 'px';
       }
     }
     /**
@@ -29787,9 +30014,7 @@ function (_React$Component) {
         enter: true,
         exit: true,
         appear: true
-      }, _react.default.createElement(PopupComponent, (0, _extends2.default)({
-        tabIndex: -1
-      }, (0, _object.default)(others, (0, _keys.default)(propTypes)), {
+      }, _react.default.createElement(PopupComponent, (0, _extends2.default)({}, (0, _object.default)(others, (0, _keys.default)(propTypes)), {
         ref: this.refPopup,
         className: cls
       }), children)));
@@ -29897,6 +30122,117 @@ exports.default = _default;
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./node_modules/react-widget-portal/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/react-widget-portal/index.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./lib */ "./node_modules/react-widget-portal/lib/index.js").default;
+
+/***/ }),
+
+/***/ "./node_modules/react-widget-portal/lib/index.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/react-widget-portal/lib/index.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/classCallCheck */ "./node_modules/@babel/runtime-corejs2/helpers/classCallCheck.js"));
+
+var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/createClass */ "./node_modules/@babel/runtime-corejs2/helpers/createClass.js"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime-corejs2/helpers/possibleConstructorReturn.js"));
+
+var _getPrototypeOf3 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/getPrototypeOf */ "./node_modules/@babel/runtime-corejs2/helpers/getPrototypeOf.js"));
+
+var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/inherits */ "./node_modules/@babel/runtime-corejs2/helpers/inherits.js"));
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/assertThisInitialized */ "./node_modules/@babel/runtime-corejs2/helpers/assertThisInitialized.js"));
+
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/defineProperty */ "./node_modules/@babel/runtime-corejs2/helpers/defineProperty.js"));
+
+var _react = _interopRequireDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+
+var _reactDom = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+
+var _propTypes = _interopRequireDefault(__webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js"));
+
+var Portal =
+/*#__PURE__*/
+function (_React$Component) {
+  (0, _inherits2.default)(Portal, _React$Component);
+
+  function Portal() {
+    var _getPrototypeOf2;
+
+    var _this;
+
+    (0, _classCallCheck2.default)(this, Portal);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf3.default)(Portal)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
+      container: null
+    });
+    return _this;
+  }
+
+  (0, _createClass2.default)(Portal, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.setState({
+        container: this.props.getContainer()
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var container = this.state.container;
+      if (!container) return null;
+      return (0, _reactDom.createPortal)(this.props.children, container);
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      return {
+        container: props.getContainer()
+      };
+    }
+  }]);
+  return Portal;
+}(_react.default.Component);
+
+exports.default = Portal;
+(0, _defineProperty2.default)(Portal, "propTypes", {
+  children: _propTypes.default.node.isRequired,
+  getContainer: _propTypes.default.func
+});
+(0, _defineProperty2.default)(Portal, "defaultProps", {
+  container: document.body,
+  getContainer: function getContainer() {
+    return document.body;
+  }
+});
 
 /***/ }),
 
@@ -33811,4 +34147,4 @@ if (!self.fetch) {
 /***/ })
 
 }]);
-//# sourceMappingURL=vendors.8957f78d.chunk.js.map
+//# sourceMappingURL=vendors.f4094383.chunk.js.map

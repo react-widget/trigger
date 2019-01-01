@@ -10,5 +10,4 @@ import "react-widget-layout/lib/style/index.css";
 
 import Demo from './Demo';
 
-
 ReactDOM.render(<Demo />, demo);
