@@ -17,7 +17,11 @@
         "type": "git",
         "url": "git+https://github.com/react-widget/trigger.git"
     },
-    "keywords": [],
+    "keywords": [
+        "react",
+        "react-widget-trigger",
+        "trigger"
+    ],
     "author": "nobo.zhou@foxmail.com",
     "license": "MIT",
     "bugs": {
@@ -36,7 +40,7 @@
         "prop-types": "^15.6.2",
         "react": "^16.7.0",
         "react-dom": "^16.7.0",
-        "react-widget-popup": "^1.0.3",
+        "react-widget-popup": "^1.0.5",
         "react-widget-portal": "^1.0.1",
         "warning": "^4.0.2"
     },
