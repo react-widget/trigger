@@ -267,204 +267,14 @@ exports.default = void 0;
 
 var _demo = _interopRequireDefault(__webpack_require__(/*! ./demos/demo1 */ "./examples/demos/demo1.js"));
 
-var _Demo = _interopRequireDefault(__webpack_require__(/*! ./demos/Demo2 */ "./examples/demos/Demo2.js"));
-
+// import Demo2 from './demos/Demo2';
 // import Demo3 from './demos/Demo3';
 // import Demo4 from './demos/Demo4';
 var _default = [{
   label: '基本功能',
   component: _demo.default
-}, {
-  label: '自定义',
-  component: _Demo.default
 }];
 exports.default = _default;
-
-/***/ }),
-
-/***/ "./examples/demos/Demo2.js":
-/*!*********************************!*\
-  !*** ./examples/demos/Demo2.js ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireWildcard = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireWildcard */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireWildcard.js");
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/classCallCheck */ "./node_modules/@babel/runtime-corejs2/helpers/classCallCheck.js"));
-
-var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/createClass */ "./node_modules/@babel/runtime-corejs2/helpers/createClass.js"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime-corejs2/helpers/possibleConstructorReturn.js"));
-
-var _getPrototypeOf4 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/getPrototypeOf */ "./node_modules/@babel/runtime-corejs2/helpers/getPrototypeOf.js"));
-
-var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/inherits */ "./node_modules/@babel/runtime-corejs2/helpers/inherits.js"));
-
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/assertThisInitialized */ "./node_modules/@babel/runtime-corejs2/helpers/assertThisInitialized.js"));
-
-var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/defineProperty */ "./node_modules/@babel/runtime-corejs2/helpers/defineProperty.js"));
-
-var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
-
-var _reactDom = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-
-var _src = _interopRequireDefault(__webpack_require__(/*! ../../src */ "./src/index.js"));
-
-var _reactWidgetLayout = _interopRequireDefault(__webpack_require__(/*! react-widget-layout */ "./node_modules/react-widget-layout/index.js"));
-
-var TriggerBtn =
-/*#__PURE__*/
-function (_React$Component) {
-  (0, _inherits2.default)(TriggerBtn, _React$Component);
-
-  function TriggerBtn() {
-    var _getPrototypeOf2;
-
-    var _this;
-
-    (0, _classCallCheck2.default)(this, TriggerBtn);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf4.default)(TriggerBtn)).call.apply(_getPrototypeOf2, [this].concat(args)));
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
-      visible: false
-    });
-    return _this;
-  }
-
-  (0, _createClass2.default)(TriggerBtn, [{
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var placement = this.props.placement;
-      var visible = this.state.visible;
-      return _react.default.createElement(_src.default, {
-        offset: 1,
-        action: "hover",
-        delay: 100,
-        popup: _react.default.createElement("div", {
-          className: "trigger-container"
-        }, placement),
-        placement: placement
-      }, _react.default.createElement("button", {
-        className: "t-btn",
-        onClick: function onClick() {
-          return _this2.setState({
-            visible: !visible
-          });
-        }
-      }, placement));
-    }
-  }]);
-  return TriggerBtn;
-}(_react.default.Component);
-
-var H1 =
-/*#__PURE__*/
-function (_React$Component2) {
-  (0, _inherits2.default)(H1, _React$Component2);
-
-  function H1() {
-    (0, _classCallCheck2.default)(this, H1);
-    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf4.default)(H1).apply(this, arguments));
-  }
-
-  (0, _createClass2.default)(H1, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      console.log('h1 mount');
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate() {
-      console.log('h1 update');
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      console.log('h1 unmount');
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return _react.default.createElement("h1", null, "Portal");
-    }
-  }]);
-  return H1;
-}(_react.default.Component);
-
-var DEMO =
-/*#__PURE__*/
-function (_Component) {
-  (0, _inherits2.default)(DEMO, _Component);
-
-  function DEMO() {
-    var _getPrototypeOf3;
-
-    var _this3;
-
-    (0, _classCallCheck2.default)(this, DEMO);
-
-    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
-
-    _this3 = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf3 = (0, _getPrototypeOf4.default)(DEMO)).call.apply(_getPrototypeOf3, [this].concat(args)));
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this3)), "state", {
-      current: null
-    });
-    return _this3;
-  }
-
-  (0, _createClass2.default)(DEMO, [{
-    key: "onClick",
-    value: function onClick(ct, e) {
-      this.setState({
-        current: ct
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var current = this.state.current;
-      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("button", {
-        onClick: this.onClick.bind(this, 'portal1')
-      }, "portal1"), _react.default.createElement("button", {
-        onClick: this.onClick.bind(this, 'portal2')
-      }, "portal2"), _react.default.createElement("div", {
-        id: "portal1",
-        style: {
-          border: "1px solid red",
-          padding: 10
-        }
-      }), _react.default.createElement("div", {
-        id: "portal2",
-        style: {
-          border: "1px solid green",
-          padding: 10
-        }
-      }), current ? (0, _reactDom.createPortal)(_react.default.createElement(H1, null), document.getElementById(current)) : null);
-    }
-  }]);
-  return DEMO;
-}(_react.Component);
-
-exports.default = DEMO;
 
 /***/ }),
 
@@ -746,6 +556,7 @@ function (_Component) {
         offset: 1,
         delay: 0,
         action: "contextMenu",
+        hideAction: "click",
         popup: _react.default.createElement("div", {
           className: "trigger-container"
         }, "contextMenu"),
@@ -1001,6 +812,7 @@ var contains = __webpack_require__(/*! bplokjs-dom-utils/contains */ "./node_mod
 var isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
 var propTypes = {
   children: _propTypes.default.any,
+  placement: _propTypes.default.string,
   offset: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.array]),
   action: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.arrayOf(_propTypes.default.string)]),
   showAction: _propTypes.default.any,
@@ -1560,4 +1372,4 @@ module.exports = __webpack_require__(/*! D:\wamp\www\github-projects\react-widge
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.0c1fb6f3.js.map
+//# sourceMappingURL=index.228bcd76.js.map

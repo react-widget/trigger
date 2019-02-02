@@ -29583,6 +29583,8 @@ var _objectWithoutProperties2 = _interopRequireDefault(__webpack_require__(/*! @
 
 var _extends2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/extends */ "./node_modules/@babel/runtime-corejs2/helpers/extends.js"));
 
+var _isArray = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/array/is-array */ "./node_modules/@babel/runtime-corejs2/core-js/array/is-array.js"));
+
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/classCallCheck */ "./node_modules/@babel/runtime-corejs2/helpers/classCallCheck.js"));
 
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/createClass */ "./node_modules/@babel/runtime-corejs2/helpers/createClass.js"));
@@ -29616,6 +29618,10 @@ var _warning = _interopRequireDefault(__webpack_require__(/*! warning */ "./node
 var _object = _interopRequireDefault(__webpack_require__(/*! object.omit */ "./node_modules/object.omit/index.js"));
 
 var _bplokjsDeferred = _interopRequireDefault(__webpack_require__(/*! bplokjs-deferred */ "./node_modules/bplokjs-deferred/index.js"));
+
+var _addClass = _interopRequireDefault(__webpack_require__(/*! dom-helpers/class/addClass */ "./node_modules/dom-helpers/class/addClass.js"));
+
+var _removeClass = _interopRequireDefault(__webpack_require__(/*! dom-helpers/class/removeClass */ "./node_modules/dom-helpers/class/removeClass.js"));
 
 function noop() {}
 
@@ -29668,6 +29674,7 @@ var propTypes = {
   maskProps: _propTypes.default.object,
   placement: _propTypes.default.any,
   // object func
+  setDirectionClassName: _propTypes.default.bool,
   //translaton
   timeout: _propTypes.default.any,
   addEndListener: _propTypes.default.func,
@@ -29742,6 +29749,20 @@ function (_React$Component) {
         of = of(popup);
       }
 
+      if ((0, _isArray.default)(of)) {
+        of = {
+          pageX: of[0],
+          pageY: of[1]
+        };
+      }
+
+      var directionMap = {
+        'left': 'right',
+        'right': 'top',
+        'bottom': 'top',
+        'top': 'bottom',
+        'center': 'center'
+      };
       var config = {
         of: of,
         using: function using(pos, feedback) {
@@ -29749,6 +29770,8 @@ function (_React$Component) {
             _using(pos, feedback);
           }
 
+          console.log(feedback);
+          result.direction = directionMap[feedback[feedback.important]];
           result.pos = pos;
           result.feedback = feedback;
         }
@@ -29777,7 +29800,19 @@ function (_React$Component) {
     key: "setPosition",
     value: function setPosition() {
       var pos = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
       var popup = this.getPopupDOM();
+
+      if (this.props.setDirectionClassName) {
+        (0, _removeClass.default)(popup, "".concat(this.props.prefixCls, "-direction-top"));
+        (0, _removeClass.default)(popup, "".concat(this.props.prefixCls, "-direction-bottom"));
+        (0, _removeClass.default)(popup, "".concat(this.props.prefixCls, "-direction-left"));
+        (0, _removeClass.default)(popup, "".concat(this.props.prefixCls, "-direction-right"));
+
+        if (direction) {
+          (0, _addClass.default)(popup, "".concat(this.props.prefixCls, "-direction-").concat(direction));
+        }
+      }
 
       if ('left' in pos) {
         popup.style.left = pos.left.toFixed() + 'px';
@@ -29821,7 +29856,7 @@ function (_React$Component) {
             } else {
               var _position = _this2.getPosition(opts);
 
-              _this2.setPosition(_position.pos);
+              _this2.setPosition(_position.pos, _position.direction);
             }
 
             _this2._hasSetPosition = true;
@@ -30089,6 +30124,7 @@ function (_React$Component) {
   mountOnEnter: true,
   unmountOnExit: true,
   // destroyOnHide
+  setDirectionClassName: true,
   mask: false,
   fixed: false,
   // 禁用每次刷新更新位置
@@ -34147,4 +34183,4 @@ if (!self.fetch) {
 /***/ })
 
 }]);
-//# sourceMappingURL=vendors.f4094383.chunk.js.map
+//# sourceMappingURL=vendors.db7aeff8.chunk.js.map

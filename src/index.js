@@ -18,6 +18,7 @@ const isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match
 
 const propTypes = {
     children: PropTypes.any,
+    placement: PropTypes.string,
     offset: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
     action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     showAction: PropTypes.any,

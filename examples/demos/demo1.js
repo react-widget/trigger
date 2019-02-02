@@ -148,6 +148,7 @@ export default class DEMO extends Component {
                         offset={1}
                         delay={0}
                         action="contextMenu"
+                        hideAction="click"
                         popup={<div className="trigger-container">contextMenu</div>}
                         placement="rightCenter"
                     >
