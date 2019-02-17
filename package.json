@@ -32,7 +32,7 @@
         "@babel/runtime": "^7.2.0",
         "@babel/runtime-corejs2": "^7.2.0",
         "bplokjs-deferred": "^1.0.0",
-        "bplokjs-dom-utils": "^1.0.5",
+        "bplokjs-dom-utils": "^1.0.7",
         "bplokjs-jqlite": "^1.0.3",
         "bplokjs-placement": "^1.0.2",
         "classnames": "^2.2.6",
@@ -41,7 +41,7 @@
         "react": "^16.7.0",
         "react-dom": "^16.7.0",
         "react-widget-popup": "^1.0.5",
-        "react-widget-portal": "^1.0.1",
+        "react-widget-portal": "^1.0.3",
         "warning": "^4.0.2"
     },
     "devDependencies": {
