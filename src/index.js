@@ -16,9 +16,13 @@ const isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match
     /(Android|iPhone|iPad|iPod|iOS|UCWEB)/i
 );
 
+// action: click | contextMenu | hover | focus
+// showAction: click | contextMenu | mouseEnter | focus
+// hideAction: click | mouseLeave | blur | resize | scroll
+
 const propTypes = {
     children: PropTypes.any,
-    placement: PropTypes.string,
+    placement: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.func]),
     offset: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
     action: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     showAction: PropTypes.any,
@@ -106,6 +110,7 @@ export default class Trigger extends React.Component {
 
     componentWillUnmount() {
         this.clearDelayTimer();
+        this.clearOutsideHandler();
     }
 
     togglePopupCloseEvents() {
@@ -135,6 +140,17 @@ export default class Trigger extends React.Component {
                 this.contextMenuOutsideHandler2 = listen(window,
                     'blur', this.onContextMenuClose);
             }
+
+            if (!this.windowScrollHandler && this.isWindowScrollToHide()) {
+                this.windowScrollHandler = listen(currentDocument,
+                    'scroll', this.onDocumentClick);
+            }
+
+            if (!this.windowResizeHandler && this.isWindowResizeToHide()) {
+                this.windowResizeHandler = listen(window,
+                    'resize', this.close.bind(this));
+            }
+
         } else {
             this.clearOutsideHandler();
         }
@@ -174,6 +190,17 @@ export default class Trigger extends React.Component {
             this.touchOutsideHandler();
             this.touchOutsideHandler = null;
         }
+
+        if (this.windowScrollHandler) {
+            this.windowScrollHandler();
+            this.windowScrollHandler = null;
+        }
+
+        if (this.windowResizeHandler) {
+            this.windowResizeHandler();
+            this.windowResizeHandler = null;
+        }
+
     }
 
     resolvePopupDOM() {
@@ -302,6 +329,16 @@ export default class Trigger extends React.Component {
     isBlurToHide = () => {
         const { action, hideAction } = this.props;
         return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
+    }
+
+    isWindowResizeToHide = () => {
+        const { hideAction } = this.props;
+        return hideAction.indexOf('resize') !== -1;
+    }
+
+    isWindowScrollToHide = () => {
+        const { hideAction } = this.props;
+        return hideAction.indexOf('scroll') !== -1;
     }
 
     onContextMenu(e) {

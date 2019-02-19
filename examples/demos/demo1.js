@@ -36,6 +36,7 @@ class Select extends React.Component {
                     placement={this.promise}
                     popup="AAAAAAAA"
                     action="click"
+                    hideAction="resize,scroll"
                 >
                     <span className="arrow">V</span>
                 </Trigger>

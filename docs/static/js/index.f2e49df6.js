@@ -364,7 +364,8 @@ function (_React$Component) {
       }), _react.default.createElement(_src.default, {
         placement: this.promise,
         popup: "AAAAAAAA",
-        action: "click"
+        action: "click",
+        hideAction: "resize,scroll"
       }, _react.default.createElement("span", {
         className: "arrow"
       }, "V")));
@@ -809,10 +810,13 @@ var _PopupRootComponent = _interopRequireDefault(__webpack_require__(/*! ./Popup
 // import omit from 'omit.js';
 var contains = __webpack_require__(/*! bplokjs-dom-utils/contains */ "./node_modules/bplokjs-dom-utils/contains.js");
 
-var isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
+var isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i); // action: click | contextMenu | hover | focus
+// showAction: click | contextMenu | mouseEnter | focus
+// hideAction: click | mouseLeave | blur | resize | scroll
+
 var propTypes = {
   children: _propTypes.default.any,
-  placement: _propTypes.default.string,
+  placement: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.object, _propTypes.default.func]),
   offset: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.array]),
   action: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.arrayOf(_propTypes.default.string)]),
   showAction: _propTypes.default.any,
@@ -885,6 +889,14 @@ function (_React$Component) {
           action = _this$props2.action,
           hideAction = _this$props2.hideAction;
       return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "isWindowResizeToHide", function () {
+      var hideAction = _this.props.hideAction;
+      return hideAction.indexOf('resize') !== -1;
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "isWindowScrollToHide", function () {
+      var hideAction = _this.props.hideAction;
+      return hideAction.indexOf('scroll') !== -1;
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onMouseEnter", function (e) {
       _this.delaySetPopupVisible(true);
@@ -962,6 +974,14 @@ function (_React$Component) {
         if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
           this.contextMenuOutsideHandler2 = (0, _events.listen)(window, 'blur', this.onContextMenuClose);
         }
+
+        if (!this.windowScrollHandler && this.isWindowScrollToHide()) {
+          this.windowScrollHandler = (0, _events.listen)(currentDocument, 'scroll', this.onDocumentClick);
+        }
+
+        if (!this.windowResizeHandler && this.isWindowResizeToHide()) {
+          this.windowResizeHandler = (0, _events.listen)(window, 'resize', this.close.bind(this));
+        }
       } else {
         this.clearOutsideHandler();
       }
@@ -987,6 +1007,16 @@ function (_React$Component) {
       if (this.touchOutsideHandler) {
         this.touchOutsideHandler();
         this.touchOutsideHandler = null;
+      }
+
+      if (this.windowScrollHandler) {
+        this.windowScrollHandler();
+        this.windowScrollHandler = null;
+      }
+
+      if (this.windowResizeHandler) {
+        this.windowResizeHandler();
+        this.windowResizeHandler = null;
       }
     }
   }, {
@@ -1372,4 +1402,4 @@ module.exports = __webpack_require__(/*! D:\wamp\www\github-projects\react-widge
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.228bcd76.js.map
+//# sourceMappingURL=index.f2e49df6.js.map

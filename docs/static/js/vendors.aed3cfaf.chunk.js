@@ -29182,39 +29182,18 @@ exports.default = _default;
 
 
 exports.__esModule = true;
-exports.transitionTimeout = transitionTimeout;
 exports.classNamesShape = exports.timeoutsShape = void 0;
 
 var _propTypes = _interopRequireDefault(__webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function transitionTimeout(transitionType) {
-  var timeoutPropName = 'transition' + transitionType + 'Timeout';
-  var enabledPropName = 'transition' + transitionType;
-  return function (props) {
-    // If the transition is enabled
-    if (props[enabledPropName]) {
-      // If no timeout duration is provided
-      if (props[timeoutPropName] == null) {
-        return new Error(timeoutPropName + ' wasn\'t supplied to CSSTransitionGroup: ' + 'this can cause unreliable animations and won\'t be supported in ' + 'a future version of React. See ' + 'https://fb.me/react-animation-transition-group-timeout for more ' + 'information.'); // If the duration isn't a number
-      } else if (typeof props[timeoutPropName] !== 'number') {
-        return new Error(timeoutPropName + ' must be a number (in milliseconds)');
-      }
-    }
-
-    return null;
-  };
-}
-
-var timeoutsShape = _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.shape({
+var timeoutsShape =  true ? _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.shape({
   enter: _propTypes.default.number,
   exit: _propTypes.default.number
-}).isRequired]);
-
+}).isRequired]) : undefined;
 exports.timeoutsShape = timeoutsShape;
-
-var classNamesShape = _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.shape({
+var classNamesShape =  true ? _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.shape({
   enter: _propTypes.default.string,
   exit: _propTypes.default.string,
   active: _propTypes.default.string
@@ -29225,8 +29204,7 @@ var classNamesShape = _propTypes.default.oneOfType([_propTypes.default.string, _
   exit: _propTypes.default.string,
   exitDone: _propTypes.default.string,
   exitActive: _propTypes.default.string
-})]);
-
+})]) : undefined;
 exports.classNamesShape = classNamesShape;
 
 /***/ }),
@@ -29770,7 +29748,6 @@ function (_React$Component) {
             _using(pos, feedback);
           }
 
-          console.log(feedback);
           result.direction = directionMap[feedback[feedback.important]];
           result.pos = pos;
           result.feedback = feedback;
@@ -29812,22 +29789,23 @@ function (_React$Component) {
         if (direction) {
           (0, _addClass.default)(popup, "".concat(this.props.prefixCls, "-direction-").concat(direction));
         }
-      }
+      } //.toFixed()
+
 
       if ('left' in pos) {
-        popup.style.left = pos.left.toFixed() + 'px';
+        popup.style.left = ~~pos.left + 'px';
       }
 
       if ('top' in pos) {
-        popup.style.top = pos.top.toFixed() + 'px';
+        popup.style.top = ~~pos.top + 'px';
       }
 
       if ('right' in pos) {
-        popup.style.right = pos.right.toFixed() + 'px';
+        popup.style.right = ~~pos.right + 'px';
       }
 
       if ('bottom' in pos) {
-        popup.style.bottom = pos.bottom.toFixed() + 'px';
+        popup.style.bottom = ~~pos.bottom + 'px';
       }
     }
     /**
@@ -30234,11 +30212,14 @@ function (_React$Component) {
   }
 
   (0, _createClass2.default)(Portal, [{
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      this.props.didUpdate();
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.setState({
-        container: this.props.getContainer()
-      });
+      this.componentDidUpdate();
     }
   }, {
     key: "render",
@@ -30261,13 +30242,14 @@ function (_React$Component) {
 exports.default = Portal;
 (0, _defineProperty2.default)(Portal, "propTypes", {
   children: _propTypes.default.node.isRequired,
-  getContainer: _propTypes.default.func
+  getContainer: _propTypes.default.func,
+  didUpdate: _propTypes.default.func
 });
 (0, _defineProperty2.default)(Portal, "defaultProps", {
-  container: document.body,
   getContainer: function getContainer() {
     return document.body;
-  }
+  },
+  didUpdate: function didUpdate() {}
 });
 
 /***/ }),
@@ -34183,4 +34165,4 @@ if (!self.fetch) {
 /***/ })
 
 }]);
-//# sourceMappingURL=vendors.db7aeff8.chunk.js.map
+//# sourceMappingURL=vendors.aed3cfaf.chunk.js.map
