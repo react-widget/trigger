@@ -34,6 +34,7 @@ const propTypes = {
     ]),
     getPopupContainer: PropTypes.func,
     getDocument: PropTypes.func,
+    popup: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
     prefixCls: PropTypes.string,
     popupClassName: PropTypes.string,
     popupMaskClassName: PropTypes.string,
