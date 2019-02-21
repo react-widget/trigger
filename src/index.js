@@ -39,6 +39,7 @@ const propTypes = {
     popupClassName: PropTypes.string,
     popupMaskClassName: PropTypes.string,
     defaultPopupVisible: PropTypes.bool,
+    popupVisible: PropTypes.bool,
     popupProps: PropTypes.object,
     mask: PropTypes.bool,
     maskClosable: PropTypes.bool,
@@ -79,7 +80,7 @@ export default class Trigger extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         return {
-            popupVisible: 'visible' in props ? props.visible : state.popupVisible
+            popupVisible: 'popupVisible' in props ? props.popupVisible : state.popupVisible
         }
     }
 
