@@ -48,6 +48,7 @@ const propTypes = {
     popupStyle: PropTypes.object,
     popupMaskStyle: PropTypes.object,
     zIndex: PropTypes.number,
+    checkDefaultPrevented: PropTypes.bool,
 }
 
 function noop() { }
@@ -76,6 +77,7 @@ export default class Trigger extends React.Component {
         popupStyle: {},
         popupMaskStyle: {},
         zIndex: null,
+        checkDefaultPrevented: false,
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -465,7 +467,7 @@ export default class Trigger extends React.Component {
     }
 
     render() {
-        const { getPopupContainer } = this.props;
+        const { getPopupContainer, checkDefaultPrevented } = this.props;
         const { popupVisible } = this.state;
 
         const child = React.Children.only(this.props.children);
@@ -477,6 +479,8 @@ export default class Trigger extends React.Component {
                 if (child.props.onContextMenu) {
                     child.props.onContextMenu(e);
                 }
+
+                if (checkDefaultPrevented && e.defaultPrevented) return;
 
                 this.clearDelayTimer();
 
@@ -490,6 +494,8 @@ export default class Trigger extends React.Component {
                     child.props.onClick(e);
                 }
 
+                if (checkDefaultPrevented && e.defaultPrevented) return;
+
                 this.clearDelayTimer();
 
                 this.onClick(e);
@@ -501,6 +507,8 @@ export default class Trigger extends React.Component {
                 if (child.props.onMouseEnter) {
                     child.props.onMouseEnter(e);
                 }
+
+                if (checkDefaultPrevented && e.defaultPrevented) return;
 
                 this.clearDelayTimer();
 
@@ -514,6 +522,8 @@ export default class Trigger extends React.Component {
                     child.props.onMouseLeave(e);
                 }
 
+                if (checkDefaultPrevented && e.defaultPrevented) return;
+
                 this.clearDelayTimer();
 
                 this.onMouseLeave(e);
@@ -526,6 +536,8 @@ export default class Trigger extends React.Component {
                     child.props.onFocus(e);
                 }
 
+                if (checkDefaultPrevented && e.defaultPrevented) return;
+
                 this.clearDelayTimer();
 
                 this.onFocus(e);
@@ -534,6 +546,8 @@ export default class Trigger extends React.Component {
                 if (child.props.onBlur) {
                     child.props.onBlur(e);
                 }
+
+                if (checkDefaultPrevented && e.defaultPrevented) return;
 
                 this.clearDelayTimer();
 

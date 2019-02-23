@@ -825,10 +825,12 @@ var propTypes = {
   delay: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.object]),
   getPopupContainer: _propTypes.default.func,
   getDocument: _propTypes.default.func,
+  popup: _propTypes.default.oneOfType([_propTypes.default.node, _propTypes.default.func]).isRequired,
   prefixCls: _propTypes.default.string,
   popupClassName: _propTypes.default.string,
   popupMaskClassName: _propTypes.default.string,
   defaultPopupVisible: _propTypes.default.bool,
+  popupVisible: _propTypes.default.bool,
   popupProps: _propTypes.default.object,
   mask: _propTypes.default.bool,
   maskClosable: _propTypes.default.bool,
@@ -836,7 +838,8 @@ var propTypes = {
   destroyPopupOnHide: _propTypes.default.bool,
   popupStyle: _propTypes.default.object,
   popupMaskStyle: _propTypes.default.object,
-  zIndex: _propTypes.default.number
+  zIndex: _propTypes.default.number,
+  checkDefaultPrevented: _propTypes.default.bool
 };
 
 function noop() {}
@@ -947,6 +950,7 @@ function (_React$Component) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       this.clearDelayTimer();
+      this.clearOutsideHandler();
     }
   }, {
     key: "togglePopupCloseEvents",
@@ -1249,7 +1253,9 @@ function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
-      var getPopupContainer = this.props.getPopupContainer;
+      var _this$props10 = this.props,
+          getPopupContainer = _this$props10.getPopupContainer,
+          checkDefaultPrevented = _this$props10.checkDefaultPrevented;
       var popupVisible = this.state.popupVisible;
 
       var child = _react.default.Children.only(this.props.children);
@@ -1261,6 +1267,8 @@ function (_React$Component) {
           if (child.props.onContextMenu) {
             child.props.onContextMenu(e);
           }
+
+          if (checkDefaultPrevented && e.defaultPrevented) return;
 
           _this3.clearDelayTimer();
 
@@ -1274,6 +1282,8 @@ function (_React$Component) {
             child.props.onClick(e);
           }
 
+          if (checkDefaultPrevented && e.defaultPrevented) return;
+
           _this3.clearDelayTimer();
 
           _this3.onClick(e);
@@ -1285,6 +1295,8 @@ function (_React$Component) {
           if (child.props.onMouseEnter) {
             child.props.onMouseEnter(e);
           }
+
+          if (checkDefaultPrevented && e.defaultPrevented) return;
 
           _this3.clearDelayTimer();
 
@@ -1298,6 +1310,8 @@ function (_React$Component) {
             child.props.onMouseLeave(e);
           }
 
+          if (checkDefaultPrevented && e.defaultPrevented) return;
+
           _this3.clearDelayTimer();
 
           _this3.onMouseLeave(e);
@@ -1310,6 +1324,8 @@ function (_React$Component) {
             child.props.onFocus(e);
           }
 
+          if (checkDefaultPrevented && e.defaultPrevented) return;
+
           _this3.clearDelayTimer();
 
           _this3.onFocus(e);
@@ -1319,6 +1335,8 @@ function (_React$Component) {
           if (child.props.onBlur) {
             child.props.onBlur(e);
           }
+
+          if (checkDefaultPrevented && e.defaultPrevented) return;
 
           _this3.clearDelayTimer();
 
@@ -1342,7 +1360,7 @@ function (_React$Component) {
     key: "getDerivedStateFromProps",
     value: function getDerivedStateFromProps(props, state) {
       return {
-        popupVisible: 'visible' in props ? props.visible : state.popupVisible
+        popupVisible: 'popupVisible' in props ? props.popupVisible : state.popupVisible
       };
     }
   }]);
@@ -1371,7 +1389,8 @@ exports.default = Trigger;
   popupRootComponent: _PopupRootComponent.default,
   popupStyle: {},
   popupMaskStyle: {},
-  zIndex: null
+  zIndex: null,
+  checkDefaultPrevented: false
 });
 
 /***/ }),
@@ -1402,4 +1421,4 @@ module.exports = __webpack_require__(/*! D:\wamp\www\github-projects\react-widge
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.f2e49df6.js.map
+//# sourceMappingURL=index.e5562d28.js.map
