@@ -126,7 +126,12 @@ export default class Trigger extends React.Component {
 
             if (!this.clickOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
                 this.clickOutsideHandler = listen(currentDocument,
-                    'mousedown', this.onDocumentClick);
+                    'mousedown', (e) => {
+                        //修复在Edge下如果点击Trigger并由上层组件隐藏Popup时，导致mouseup无法触发从而导致文字选择的BUG...
+                        //不在Trigger里修复，这部分需要由上层组件通过setTimeout方式延迟隐藏的方式来规避
+                        //e.preventDefault();
+                        this.onDocumentClick(e);
+                    });
             }
 
             if (!this.touchOutsideHandler && isMobile) {
