@@ -364,7 +364,8 @@ function (_React$Component) {
       }), _react.default.createElement(_src.default, {
         placement: this.promise,
         popup: "AAAAAAAA",
-        action: "click"
+        action: "click",
+        hideAction: "resize,scroll"
       }, _react.default.createElement("span", {
         className: "arrow"
       }, "V")));
@@ -809,10 +810,13 @@ var _PopupRootComponent = _interopRequireDefault(__webpack_require__(/*! ./Popup
 // import omit from 'omit.js';
 var contains = __webpack_require__(/*! bplokjs-dom-utils/contains */ "./node_modules/bplokjs-dom-utils/contains.js");
 
-var isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
+var isMobile = typeof navigator !== 'undefined' && !!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i); // action: click | contextMenu | hover | focus
+// showAction: click | contextMenu | mouseEnter | focus
+// hideAction: click | mouseLeave | blur | resize | scroll
+
 var propTypes = {
   children: _propTypes.default.any,
-  placement: _propTypes.default.string,
+  placement: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.object, _propTypes.default.func]),
   offset: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.array]),
   action: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.arrayOf(_propTypes.default.string)]),
   showAction: _propTypes.default.any,
@@ -821,10 +825,12 @@ var propTypes = {
   delay: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.object]),
   getPopupContainer: _propTypes.default.func,
   getDocument: _propTypes.default.func,
+  popup: _propTypes.default.oneOfType([_propTypes.default.node, _propTypes.default.func]).isRequired,
   prefixCls: _propTypes.default.string,
   popupClassName: _propTypes.default.string,
   popupMaskClassName: _propTypes.default.string,
   defaultPopupVisible: _propTypes.default.bool,
+  popupVisible: _propTypes.default.bool,
   popupProps: _propTypes.default.object,
   mask: _propTypes.default.bool,
   maskClosable: _propTypes.default.bool,
@@ -832,7 +838,8 @@ var propTypes = {
   destroyPopupOnHide: _propTypes.default.bool,
   popupStyle: _propTypes.default.object,
   popupMaskStyle: _propTypes.default.object,
-  zIndex: _propTypes.default.number
+  zIndex: _propTypes.default.number,
+  checkDefaultPrevented: _propTypes.default.bool
 };
 
 function noop() {}
@@ -886,6 +893,14 @@ function (_React$Component) {
           hideAction = _this$props2.hideAction;
       return action.indexOf('focus') !== -1 || hideAction.indexOf('blur') !== -1;
     });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "isWindowResizeToHide", function () {
+      var hideAction = _this.props.hideAction;
+      return hideAction.indexOf('resize') !== -1;
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "isWindowScrollToHide", function () {
+      var hideAction = _this.props.hideAction;
+      return hideAction.indexOf('scroll') !== -1;
+    });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onMouseEnter", function (e) {
       _this.delaySetPopupVisible(true);
     });
@@ -935,6 +950,7 @@ function (_React$Component) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       this.clearDelayTimer();
+      this.clearOutsideHandler();
     }
   }, {
     key: "togglePopupCloseEvents",
@@ -962,6 +978,14 @@ function (_React$Component) {
         if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
           this.contextMenuOutsideHandler2 = (0, _events.listen)(window, 'blur', this.onContextMenuClose);
         }
+
+        if (!this.windowScrollHandler && this.isWindowScrollToHide()) {
+          this.windowScrollHandler = (0, _events.listen)(currentDocument, 'scroll', this.onDocumentClick);
+        }
+
+        if (!this.windowResizeHandler && this.isWindowResizeToHide()) {
+          this.windowResizeHandler = (0, _events.listen)(window, 'resize', this.close.bind(this));
+        }
       } else {
         this.clearOutsideHandler();
       }
@@ -987,6 +1011,16 @@ function (_React$Component) {
       if (this.touchOutsideHandler) {
         this.touchOutsideHandler();
         this.touchOutsideHandler = null;
+      }
+
+      if (this.windowScrollHandler) {
+        this.windowScrollHandler();
+        this.windowScrollHandler = null;
+      }
+
+      if (this.windowResizeHandler) {
+        this.windowResizeHandler();
+        this.windowResizeHandler = null;
       }
     }
   }, {
@@ -1219,7 +1253,9 @@ function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
-      var getPopupContainer = this.props.getPopupContainer;
+      var _this$props10 = this.props,
+          getPopupContainer = _this$props10.getPopupContainer,
+          checkDefaultPrevented = _this$props10.checkDefaultPrevented;
       var popupVisible = this.state.popupVisible;
 
       var child = _react.default.Children.only(this.props.children);
@@ -1231,6 +1267,8 @@ function (_React$Component) {
           if (child.props.onContextMenu) {
             child.props.onContextMenu(e);
           }
+
+          if (checkDefaultPrevented && e.defaultPrevented) return;
 
           _this3.clearDelayTimer();
 
@@ -1244,6 +1282,8 @@ function (_React$Component) {
             child.props.onClick(e);
           }
 
+          if (checkDefaultPrevented && e.defaultPrevented) return;
+
           _this3.clearDelayTimer();
 
           _this3.onClick(e);
@@ -1255,6 +1295,8 @@ function (_React$Component) {
           if (child.props.onMouseEnter) {
             child.props.onMouseEnter(e);
           }
+
+          if (checkDefaultPrevented && e.defaultPrevented) return;
 
           _this3.clearDelayTimer();
 
@@ -1268,6 +1310,8 @@ function (_React$Component) {
             child.props.onMouseLeave(e);
           }
 
+          if (checkDefaultPrevented && e.defaultPrevented) return;
+
           _this3.clearDelayTimer();
 
           _this3.onMouseLeave(e);
@@ -1280,6 +1324,8 @@ function (_React$Component) {
             child.props.onFocus(e);
           }
 
+          if (checkDefaultPrevented && e.defaultPrevented) return;
+
           _this3.clearDelayTimer();
 
           _this3.onFocus(e);
@@ -1289,6 +1335,8 @@ function (_React$Component) {
           if (child.props.onBlur) {
             child.props.onBlur(e);
           }
+
+          if (checkDefaultPrevented && e.defaultPrevented) return;
 
           _this3.clearDelayTimer();
 
@@ -1312,7 +1360,7 @@ function (_React$Component) {
     key: "getDerivedStateFromProps",
     value: function getDerivedStateFromProps(props, state) {
       return {
-        popupVisible: 'visible' in props ? props.visible : state.popupVisible
+        popupVisible: 'popupVisible' in props ? props.popupVisible : state.popupVisible
       };
     }
   }]);
@@ -1341,7 +1389,8 @@ exports.default = Trigger;
   popupRootComponent: _PopupRootComponent.default,
   popupStyle: {},
   popupMaskStyle: {},
-  zIndex: null
+  zIndex: null,
+  checkDefaultPrevented: false
 });
 
 /***/ }),
@@ -1372,4 +1421,4 @@ module.exports = __webpack_require__(/*! D:\wamp\www\github-projects\react-widge
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.228bcd76.js.map
+//# sourceMappingURL=index.e5562d28.js.map
