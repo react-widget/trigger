@@ -2,13 +2,17 @@ import React from "react";
 import ReactDOM, { findDOMNode } from "react-dom";
 import PropTypes from "prop-types";
 import Popup from "react-widget-popup";
+import listen from "dom-helpers/listen";
+import contains from "dom-helpers/contains";
+import position from "jq-position";
 import Portal from "react-widget-portal";
-import getPlacement from "bplokjs-placement";
-import Deferred from "bplokjs-deferred";
-import { listen } from "bplokjs-dom-utils/events";
+import getPlacement, { Placements } from "./getPlacement";
+// import Portal from "react-widget-portal";
+// import getPlacement from "bplokjs-placement";
+// import Deferred from "bplokjs-deferred";
+// import { listen } from "bplokjs-dom-utils/events";
 // import classnames from 'classnames';
 // import omit from 'omit.js';
-const contains = require("bplokjs-dom-utils/contains");
 
 import PopupRootComponent from "./PopupRootComponent";
 
@@ -17,13 +21,36 @@ const isMobile =
 	!!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
 
 export interface TriggerProps {
-	placement?: any;
-	offset?: any;
+	placement?: Placements;
+	offset?: [number, number];
 	action?: any;
+	showAction?: any;
+	hideAction?: any;
+	onPopupVisibleChange?: any;
+	delay?: any;
+	getPopupContainer: any;
+	getDocument: any;
+	popup?: any;
+	prefixCls: any;
+	popupClassName: any;
+	popupMaskClassName: any;
+	defaultPopupVisible: any;
+	popupVisible: any;
+	popupProps: any;
+	mask: any;
+	maskClosable: any;
+	popupRootComponent: any;
+	destroyPopupOnHide: any;
+	popupStyle: any;
+	popupMaskStyle: any;
+	zIndex: any;
+	checkDefaultPrevented: any;
 	usePortal: boolean;
 }
 
-export interface TriggerState {}
+export interface TriggerState {
+	popupVisible: boolean;
+}
 
 // action: click | contextMenu | hover | focus
 // showAction: click | contextMenu | mouseEnter | focus
@@ -59,14 +86,14 @@ const propTypes = {
 
 function noop() {}
 
-export class Trigger extends React.Component {
+export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	static propTypes = propTypes;
 
 	static defaultProps = {
 		placement: "bottomLeft",
 		offset: 0,
 		defaultPopupVisible: false,
-		action: [],
+		action: ["click"],
 		showAction: [],
 		hideAction: [],
 		delay: 0,
@@ -82,6 +109,7 @@ export class Trigger extends React.Component {
 		popupMaskStyle: {},
 		zIndex: null,
 		checkDefaultPrevented: false,
+		usePortal: true,
 	};
 
 	static getDerivedStateFromProps(props, state) {
@@ -94,27 +122,42 @@ export class Trigger extends React.Component {
 		popupVisible: this.props.defaultPopupVisible,
 	};
 
-	_popup = null;
+	_popup: any = null;
 
-	delayTimer = null;
+	delayTimer: any = null;
 
-	promise = null;
+	promise: any = null;
 
-	componentDidMount() {
-		if (this.state.popupVisible) {
-			this.resolvePopupDOM();
-		}
+	protected popupInstance: React.ReactInstance;
+	protected triggerInstance: React.ReactInstance;
 
-		this.togglePopupCloseEvents();
-	}
+	protected refHandlers = {
+		popup: (node: React.ReactInstance) => (this.popupInstance = node),
+		trigger: (node: React.ReactInstance) => (this.triggerInstance = node),
+	};
 
-	componentDidUpdate() {
-		if (this.state.popupVisible) {
-			this.resolvePopupDOM();
-		}
+	protected clickOutsideHandler: null | (() => void);
+	protected touchOutsideHandler: null | (() => void);
+	protected contextMenuOutsideHandler1: null | (() => void);
+	protected contextMenuOutsideHandler2: null | (() => void);
+	protected windowScrollHandler: null | (() => void);
+	protected windowResizeHandler: null | (() => void);
 
-		this.togglePopupCloseEvents();
-	}
+	// componentDidMount() {
+	// 	if (this.state.popupVisible) {
+	// 		this.resolvePopupDOM();
+	// 	}
+
+	// 	this.togglePopupCloseEvents();
+	// }
+
+	// componentDidUpdate() {
+	// 	if (this.state.popupVisible) {
+	// 		this.resolvePopupDOM();
+	// 	}
+
+	// 	this.togglePopupCloseEvents();
+	// }
 
 	componentWillUnmount() {
 		this.clearDelayTimer();
@@ -129,7 +172,7 @@ export class Trigger extends React.Component {
 			const currentDocument = getDocument();
 
 			if (!this.clickOutsideHandler && (this.isClickToHide() || this.isContextMenuToShow())) {
-				this.clickOutsideHandler = listen(currentDocument, "mousedown", e => {
+				this.clickOutsideHandler = listen(currentDocument, "mousedown", (e) => {
 					//修复在Edge下如果点击Trigger并由上层组件隐藏Popup时，导致mouseup无法触发从而导致文字选择的BUG...
 					//不在Trigger里修复，这部分需要由上层组件通过setTimeout方式延迟隐藏的方式来规避
 					//e.preventDefault();
@@ -151,6 +194,7 @@ export class Trigger extends React.Component {
 			}
 			// close popup when trigger type contains 'onContextMenu' and window is blur.
 			if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
+				//@ts-ignore
 				this.contextMenuOutsideHandler2 = listen(window, "blur", this.onContextMenuClose);
 			}
 
@@ -159,6 +203,7 @@ export class Trigger extends React.Component {
 			}
 
 			if (!this.windowResizeHandler && this.isWindowResizeToHide()) {
+				//@ts-ignore
 				this.windowResizeHandler = listen(window, "resize", this.close.bind(this));
 			}
 		} else {
@@ -166,7 +211,7 @@ export class Trigger extends React.Component {
 		}
 	}
 
-	onDocumentClick = event => {
+	onDocumentClick = (event) => {
 		if (this.props.mask && !this.props.maskClosable) {
 			return;
 		}
@@ -212,41 +257,41 @@ export class Trigger extends React.Component {
 		}
 	}
 
-	resolvePopupDOM() {
-		const { placement, offset } = this.props;
+	// resolvePopupDOM() {
+	// 	const { placement, offset } = this.props;
 
-		if (!this.promise) {
-			return;
-		}
+	// 	if (!this.promise) {
+	// 		return;
+	// 	}
 
-		const pOffset = [0, 0];
+	// 	const pOffset = [0, 0];
 
-		if (!Array.isArray(offset)) {
-			if (/^left/i.test(placement)) {
-				pOffset[0] = offset * -1;
-			}
+	// 	if (!Array.isArray(offset)) {
+	// 		if (/^left/i.test(placement)) {
+	// 			pOffset[0] = offset * -1;
+	// 		}
 
-			if (/^right/i.test(placement)) {
-				pOffset[0] = offset;
-			}
+	// 		if (/^right/i.test(placement)) {
+	// 			pOffset[0] = offset;
+	// 		}
 
-			if (/^top/i.test(placement)) {
-				pOffset[1] = offset * -1;
-			}
+	// 		if (/^top/i.test(placement)) {
+	// 			pOffset[1] = offset * -1;
+	// 		}
 
-			if (/^bottom/i.test(placement)) {
-				pOffset[1] = offset;
-			}
-		} else {
-			pOffset[0] = offset[0];
-			pOffset[1] = offset[1];
-		}
+	// 		if (/^bottom/i.test(placement)) {
+	// 			pOffset[1] = offset;
+	// 		}
+	// 	} else {
+	// 		pOffset[0] = offset[0];
+	// 		pOffset[1] = offset[1];
+	// 	}
 
-		this.promise.resolve({
-			of: findDOMNode(this),
-			...getPlacement(placement, pOffset),
-		});
-	}
+	// 	// this.promise.resolve({
+	// 	// 	of: findDOMNode(this),
+	// 	// 	...getPlacement(placement, pOffset),
+	// 	// });
+	// }
 
 	_setPopupVisible(popupVisible) {
 		if (!("popupVisible" in this.props)) {
@@ -356,21 +401,21 @@ export class Trigger extends React.Component {
 		}
 	}
 
-	onMouseEnter = e => {
+	onMouseEnter = (e) => {
 		this.delaySetPopupVisible(true);
 	};
 
-	onMouseLeave = e => {
+	onMouseLeave = (e) => {
 		this.delaySetPopupVisible(false);
 	};
 
-	onFocus = e => {
+	onFocus = (e) => {
 		if (this.isFocusToShow()) {
 			this.delaySetPopupVisible(true);
 		}
 	};
 
-	onBlur = e => {
+	onBlur = (e) => {
 		if (this.isBlurToHide()) {
 			this.delaySetPopupVisible(false);
 		}
@@ -382,7 +427,7 @@ export class Trigger extends React.Component {
 		}
 	};
 
-	savePopup = popup => {
+	savePopup = (popup) => {
 		this._popup = popup;
 	};
 
@@ -404,9 +449,16 @@ export class Trigger extends React.Component {
 		return null;
 	}
 
+	setPopupPosition(dom: HTMLElement) {
+		const { placement, offset } = this.props;
+		position(dom, {
+			...getPlacement(placement!, offset),
+			of: findDOMNode(this),
+		});
+	}
+
 	getPopupComponent() {
 		const {
-			placement,
 			popup,
 			prefixCls,
 			popupClassName,
@@ -415,19 +467,10 @@ export class Trigger extends React.Component {
 			mask,
 			popupStyle,
 			popupMaskStyle,
-			popupRootComponent: PopupRootComponent,
 			destroyPopupOnHide,
 			zIndex,
 		} = this.props;
 		const { popupVisible } = this.state;
-
-		let promise;
-
-		if (typeof placement === "string") {
-			this.promise = promise = Deferred();
-		} else {
-			promise = placement;
-		}
 
 		const maskProps = popupProps.maskProps || {};
 
@@ -441,37 +484,40 @@ export class Trigger extends React.Component {
 
 		return (
 			<Popup
+				ref={this.refHandlers.popup}
 				prefixCls={prefixCls}
-				placement={promise}
 				unmountOnExit={destroyPopupOnHide}
 				style={newPopupStyle}
 				className={popupClassName}
 				{...popupProps}
-				rootComponent={PopupRootComponent}
 				mask={mask}
 				visible={popupVisible}
-				ref={this.savePopup}
+				transition={{
+					onEnter: (dom) => {
+						this.setPopupPosition(dom);
+						console.log("onEnter");
+					},
+				}}
 				maskProps={{
 					style: newPopupMaskStyle,
 					className: popupMaskClassName,
 					...maskProps,
 				}}
 			>
-				{typeof popup === "function" ? popup() : popup}
+				{popup}
 			</Popup>
 		);
 	}
 
 	render() {
-		const { getPopupContainer, checkDefaultPrevented } = this.props;
-		const { popupVisible } = this.state;
+		const { checkDefaultPrevented, usePortal } = this.props;
 
-		const child = React.Children.only(this.props.children);
+		const child = React.Children.only(this.props.children) as any;
 
-		const newChildProps = {};
+		const newChildProps: React.HTMLAttributes<any> = {};
 
 		if (this.isContextMenuToShow()) {
-			newChildProps.onContextMenu = e => {
+			newChildProps.onContextMenu = (e) => {
 				if (child.props.onContextMenu) {
 					child.props.onContextMenu(e);
 				}
@@ -485,7 +531,7 @@ export class Trigger extends React.Component {
 		}
 
 		if (this.isClickToHide() || this.isClickToShow()) {
-			newChildProps.onClick = e => {
+			newChildProps.onClick = (e) => {
 				if (child.props.onClick) {
 					child.props.onClick(e);
 				}
@@ -499,7 +545,7 @@ export class Trigger extends React.Component {
 		}
 
 		if (this.isMouseEnterToShow()) {
-			newChildProps.onMouseEnter = e => {
+			newChildProps.onMouseEnter = (e) => {
 				if (child.props.onMouseEnter) {
 					child.props.onMouseEnter(e);
 				}
@@ -513,7 +559,7 @@ export class Trigger extends React.Component {
 		}
 
 		if (this.isMouseLeaveToHide()) {
-			newChildProps.onMouseLeave = e => {
+			newChildProps.onMouseLeave = (e) => {
 				if (child.props.onMouseLeave) {
 					child.props.onMouseLeave(e);
 				}
@@ -527,7 +573,7 @@ export class Trigger extends React.Component {
 		}
 
 		if (this.isFocusToShow() || this.isBlurToHide()) {
-			newChildProps.onFocus = e => {
+			newChildProps.onFocus = (e) => {
 				if (child.props.onFocus) {
 					child.props.onFocus(e);
 				}
@@ -538,7 +584,7 @@ export class Trigger extends React.Component {
 
 				this.onFocus(e);
 			};
-			newChildProps.onBlur = e => {
+			newChildProps.onBlur = (e) => {
 				if (child.props.onBlur) {
 					child.props.onBlur(e);
 				}
@@ -552,16 +598,17 @@ export class Trigger extends React.Component {
 		}
 
 		const trigger = React.cloneElement(child, newChildProps);
-		let portal;
 
-		if (popupVisible || this._popup) {
-			portal = <Portal getContainer={getPopupContainer}>{this.getPopupComponent()}</Portal>;
+		let popup = this.getPopupComponent();
+
+		if (usePortal) {
+			popup = <Portal container={document.body}>{popup}</Portal>;
 		}
 
 		return (
 			<>
 				{trigger}
-				{portal}
+				{popup}
 			</>
 		);
 	}

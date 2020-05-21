@@ -42,10 +42,14 @@
 		"react-dom": ">=16.8.0"
 	},
 	"dependencies": {
-		"@types/react-transition-group": "^4.2.4",
 		"@babel/runtime": "^7.9.2",
+		"@types/react-transition-group": "^4.2.4",
+		"bplokjs-placement": "^1.0.2",
 		"classnames": "^2.2.6",
-		"bplokjs-placement": "^1.0.2"
+		"dom-helpers": "^5.1.4",
+		"jq-position": "^1.0.0",
+		"react-widget-popup": "^3.4.3",
+		"react-widget-portal": "^1.2.0"
 	},
 	"devDependencies": {
 		"@types/enzyme": "^3.10.5",
@@ -61,6 +65,7 @@
 		"packez": "^4.1.2",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",
+		"react-widget-layout": "^1.0.2",
 		"rimraf": "^3.0.2",
 		"transform-es": "^5.0.3",
 		"typescript": "^3.8.3"

@@ -15,7 +15,7 @@ function getOffset(h, v, offset) {
 // at: point(at)
 // my: point(at) position of target
 
-type Placements =
+export type Placements =
 	| "center"
 	| "centerCenter"
 	| "left"
