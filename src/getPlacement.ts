@@ -1,141 +1,129 @@
-const reg = /^\-/;
+function getOffset(h: string, v: string, offset: [number, number]) {
+	let offsetLeft = offset[0];
+	let offsetTop = offset[1];
 
-function getOffset(h, v, offset) {
-	if (offset[0]) {
-		h += reg.test(offset[0]) ? offset[0] : "+" + offset[0];
+	if (v === "top") {
+		offsetTop *= -1;
 	}
 
-	if (offset[1]) {
-		v += reg.test(offset[1]) ? offset[1] : "+" + offset[1];
+	if (h === "left") {
+		offsetLeft *= -1;
+	}
+
+	if (offsetLeft) {
+		h += offsetLeft > 0 ? "+" + offsetLeft : offsetLeft;
+	}
+
+	if (offsetTop) {
+		v += offsetTop > 0 ? "+" + offsetTop : offsetTop;
 	}
 
 	return [h, v].join(" ");
 }
 
-// at: point(at)
-// my: point(at) position of target
-
 export type Placements =
-	| "center"
-	| "centerCenter"
 	| "left"
 	| "top"
 	| "right"
 	| "bottom"
-	| "leftCenter"
-	| "rightCenter"
-	| "topCenter"
-	| "bottomCenter"
 	| "topLeft"
-	| "leftTop"
 	| "topRight"
+	| "leftTop"
+	| "leftBottom"
 	| "rightTop"
-	| "bottomRight"
 	| "rightBottom"
-	| "bottomLeft"
-	| "leftBottom";
+	| "bottomRight"
+	| "bottomLeft";
 
 type Offset = [number, number];
 
 const placements = {
-	center: function (offset: Offset) {
-		return {
-			at: getOffset("center", "center", offset),
-			my: "center center",
-		};
-	},
-	centerCenter: function (offset: Offset) {
-		return {
-			at: getOffset("center", "center", offset),
-			my: "center center",
-		};
-	},
 	left: function (offset: Offset) {
-		return this.leftCenter(offset);
-	},
-	top: function (offset: Offset) {
-		return this.topCenter(offset);
-	},
-	right: function (offset: Offset) {
-		return this.rightCenter(offset);
-	},
-	bottom: function (offset: Offset) {
-		return this.bottomCenter(offset);
-	},
-	leftCenter: function (offset: Offset) {
 		return {
 			at: getOffset("left", "center", offset),
 			my: "right center",
 		};
 	},
-	rightCenter: function (offset: Offset) {
-		return {
-			at: getOffset("right", "center", offset),
-			my: "left center",
-		};
-	},
-	topCenter: function (offset: Offset) {
+	top: function (offset: Offset) {
 		return {
 			at: getOffset("center", "top", offset),
 			my: "center bottom",
 		};
 	},
-	bottomCenter: function (offset: Offset) {
+	right: function (offset: Offset) {
+		return {
+			at: getOffset("right", "center", offset),
+			my: "left center",
+		};
+	},
+	bottom: function (offset: Offset) {
 		return {
 			at: getOffset("center", "bottom", offset),
 			my: "center top",
 		};
 	},
+
 	topLeft: function (offset: Offset) {
 		return {
 			at: getOffset("left", "top", offset),
 			my: "left bottom",
 		};
 	},
-	leftTop: function (offset: Offset) {
-		return {
-			at: getOffset("left", "top", offset),
-			my: "right top",
-		};
-	},
+
 	topRight: function (offset: Offset) {
 		return {
 			at: getOffset("right", "top", offset),
 			my: "right bottom",
 		};
 	},
-	rightTop: function (offset: Offset) {
+
+	leftTop: function (offset: Offset) {
 		return {
-			at: getOffset("right", "top", offset),
-			my: "left top",
-		};
-	},
-	bottomRight: function (offset: Offset) {
-		return {
-			at: getOffset("right", "bottom", offset),
+			at: getOffset("left", "top", offset),
 			my: "right top",
 		};
 	},
-	rightBottom: function (offset: Offset) {
-		return {
-			at: getOffset("right", "bottom", offset),
-			my: "left bottom",
-		};
-	},
-	bottomLeft: function (offset: Offset) {
-		return {
-			at: getOffset("left", "bottom", offset),
-			my: "left top",
-		};
-	},
+
 	leftBottom: function (offset: Offset) {
 		return {
 			at: getOffset("left", "bottom", offset),
 			my: "right bottom",
 		};
 	},
+
+	rightTop: function (offset: Offset) {
+		return {
+			at: getOffset("right", "top", offset),
+			my: "left top",
+		};
+	},
+
+	rightBottom: function (offset: Offset) {
+		return {
+			at: getOffset("right", "bottom", offset),
+			my: "left bottom",
+		};
+	},
+
+	bottomLeft: function (offset: Offset) {
+		return {
+			at: getOffset("left", "bottom", offset),
+			my: "left top",
+		};
+	},
+
+	bottomRight: function (offset: Offset) {
+		return {
+			at: getOffset("right", "bottom", offset),
+			my: "right top",
+		};
+	},
 };
 
-export default function getPlacement(placement: Placements, offset?: [number, number]) {
+export default function getPlacement(placement: Placements, offset?: [number, number] | number) {
+	if (typeof offset === "number") {
+		offset = /^left|right/.test(placement) ? [offset, 0] : [0, offset];
+	}
+
 	return placements[placement] ? placements[placement](offset || [0, 0]) : null;
 }
