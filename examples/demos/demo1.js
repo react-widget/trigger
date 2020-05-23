@@ -67,6 +67,7 @@ export default class DEMO extends Component {
 				<TriggerButton
 					placement="bottomLeft"
 					action="contextMenu"
+					hideAction="mouseDown"
 					text="action:contextMenu"
 					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
 				/>
@@ -87,6 +88,12 @@ export default class DEMO extends Component {
 					placement="bottomLeft"
 					action="focus"
 					text="action:focus"
+					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
+				/>
+				<TriggerButton
+					placement="bottomLeft"
+					action="mouseDown"
+					text="action:mouseDown"
 					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
 				/>
 				<hr />
