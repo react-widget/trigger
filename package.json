@@ -48,7 +48,7 @@
 		"classnames": "^2.2.6",
 		"dom-helpers": "^5.1.4",
 		"jq-position": "^1.0.0",
-		"react-widget-popup": "^3.4.3",
+		"react-widget-popup": "^3.4.5",
 		"react-widget-portal": "^1.2.0"
 	},
 	"devDependencies": {

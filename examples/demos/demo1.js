@@ -2,11 +2,22 @@ import React, { Component } from "react";
 import { findDOMNode } from "react-dom";
 import Trigger from "../../src";
 
-function TriggerButton({ placement, offset }) {
+const animateClassNames = {
+	appear: "animated",
+	appearActive: "fadeBottomIn",
+	enter: "animated",
+	enterActive: "fadeBottomIn",
+	enterDone: "",
+	exit: "animated",
+	exitActive: "fadeBottomOut",
+	exitDone: "",
+};
+
+function TriggerButton({ text, ...props }) {
 	return (
 		<Trigger
-			placement={placement}
 			offset={2}
+			// maskClosable={false}
 			popup={
 				<div
 					style={{
@@ -20,8 +31,9 @@ function TriggerButton({ placement, offset }) {
 					test...
 				</div>
 			}
+			{...props}
 		>
-			<button>{placement}</button>
+			<button>{text || props.placement}</button>
 		</Trigger>
 	);
 }
@@ -51,6 +63,39 @@ export default class DEMO extends Component {
 				<TriggerButton placement="rightTop" />
 				<TriggerButton placement="right" />
 				<TriggerButton placement="rightBottom" />
+				<hr />
+				<TriggerButton
+					placement="bottomLeft"
+					action="contextMenu"
+					text="action:contextMenu"
+					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
+				/>
+				<TriggerButton
+					placement="bottomLeft"
+					action="click"
+					text="action:click"
+					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
+				/>
+				<TriggerButton
+					placement="bottomLeft"
+					action="hover"
+					text="action:hover"
+					delay={200}
+					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
+				/>
+				<TriggerButton
+					placement="bottomLeft"
+					action="focus"
+					text="action:focus"
+					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
+				/>
+				<hr />
+				<TriggerButton placement="bottomLeft" mask text="mask" />
+				<TriggerButton
+					placement="bottomLeft"
+					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
+					text="popupTransition"
+				/>
 			</div>
 		);
 	}
