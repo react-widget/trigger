@@ -48,21 +48,33 @@ export default class DEMO extends Component {
 	render() {
 		return (
 			<div>
-				<TriggerButton placement="bottomLeft" />
-				<TriggerButton placement="bottom" />
-				<TriggerButton placement="bottomRight" />
+				<TriggerButton action="hover" placement="bottomLeft" />
+				<TriggerButton action="hover" placement="bottom" />
+				<TriggerButton action="hover" placement="bottomRight" />
 				<hr />
-				<TriggerButton placement="topLeft" />
-				<TriggerButton placement="top" />
-				<TriggerButton placement="topRight" />
+				<TriggerButton action="hover" placement="topLeft" />
+				<TriggerButton action="hover" placement="top" />
+				<TriggerButton action="hover" placement="topRight" />
 				<hr />
-				<TriggerButton placement="leftTop" />
-				<TriggerButton placement="left" />
-				<TriggerButton placement="leftBottom" />
+				<TriggerButton action="hover" placement="leftTop" />
+				<div
+					style={{
+						position: "relative",
+					}}
+				>
+					<TriggerButton action="hover" usePortal={false} placement="left" />
+				</div>
+				<TriggerButton action="hover" placement="leftBottom" />
 				<hr />
-				<TriggerButton placement="rightTop" />
-				<TriggerButton placement="right" />
-				<TriggerButton placement="rightBottom" />
+				<TriggerButton action="hover" placement="rightTop" />
+				<div
+					style={{
+						position: "relative",
+					}}
+				>
+					<TriggerButton action="hover" usePortal={false} placement="right" />
+				</div>
+				<TriggerButton action="hover" placement="rightBottom" />
 				<hr />
 				<TriggerButton
 					placement="bottomLeft"
