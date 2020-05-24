@@ -11,6 +11,68 @@ Trigger触发组件
 
 [![Edit react-wiget-trigger](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/react-wiget-trigger-llvwn?fontsize=14&hidenavigation=1&theme=dark)
 
+```js
+import React from "react";
+import Trigger from "react-widget-trigger";
+import "react-widget-trigger/style";
+import "./styles.css";
+
+export default function App() {
+  return (
+    <div
+      className="App"
+      style={{
+        padding: 100
+      }}
+    >
+      <Trigger
+        offset={1}
+        placement="bottomRight"
+        popup={trigger => (
+          <div
+            style={{
+              width: 100,
+              height: 100,
+              border: "1px solid #f2f2f2",
+              padding: 10
+            }}
+          >
+            <div>Title</div>
+            <div>
+              Content
+              <Trigger
+                usePortal={false}
+                action="hover"
+                delay={50}
+                offset={1}
+                popup={
+                  <div
+                    style={{
+                      width: 150
+                    }}
+                  >
+                    hover popup test...
+                  </div>
+                }
+              >
+                <a href="###">Hover</a>
+              </Trigger>
+            </div>
+
+            <button onClick={() => trigger.hide()}>关闭</button>
+          </div>
+        )}
+        action={["click"]}
+      >
+        <button>点击试试</button>
+      </Trigger>
+    </div>
+  );
+}
+
+
+```
+
 
 ### Interfaces
 
@@ -99,11 +161,9 @@ export interface TriggerState {
 export declare class Trigger extends React.Component<TriggerProps, TriggerState> {
     popupInstance: Popup;
     triggerInstance: React.ReactInstance;
-    componentDidMount(): void;
-    componentDidUpdate(): void;
-    componentWillUnmount(): void;
     show(): void;
     hide(): void;
+    updatePopupPosition(): void;
 }
 export default Trigger;
 ```
@@ -138,6 +198,7 @@ export default Trigger;
 .rw-trigger-root {
 	position: absolute;
 	left: 0;
+	right: 0;
 	top: 0;
 }
 
@@ -158,5 +219,6 @@ export default Trigger;
 	opacity: 0.1;
 	z-index: 2000;
 }
+
 
 ```

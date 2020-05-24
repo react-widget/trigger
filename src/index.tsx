@@ -3,7 +3,9 @@ import { findDOMNode } from "react-dom";
 import Popup, { PopupProps } from "react-widget-popup";
 import listen from "dom-helpers/listen";
 import contains from "dom-helpers/contains";
-import position, { PositionOptions } from "jq-position";
+import removeClass from "dom-helpers/removeClass";
+import addClass from "dom-helpers/addClass";
+import position, { PositionOptions, Feedback } from "jq-position";
 import Portal, { PortalProps } from "react-widget-portal";
 import getPlacement, { Placements } from "./getPlacement";
 
@@ -20,6 +22,25 @@ type Delay = {
 };
 
 export const version = "%VERSION%";
+
+export function feedbackToPlacement(feedback: Feedback) {
+	const map = {
+		center_top_center_bottom: "top",
+		left_top_left_bottom: "topLeft",
+		right_top_right_bottom: "topRight",
+		center_bottom_center_top: "bottom",
+		left_bottom_left_top: "bottomLeft",
+		right_bottom_right_top: "bottomRight",
+		left_center_right_center: "left",
+		left_top_right_top: "leftTop",
+		left_bottom_right_bottom: "leftBottom",
+		right_center_left_center: "right",
+		right_top_left_top: "rightTop",
+		right_bottom_left_bottom: "rightBottom",
+	};
+
+	return map[feedback.at.join("_") + "_" + feedback.my.join("_")];
+}
 
 export interface TriggerProps {
 	/** 样式前缀 */
@@ -186,9 +207,6 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 				(this.isMouseDownToHide() || this.isClickToHide() || this.isContextMenuToShow())
 			) {
 				this.clickOutsideHandler = listen(currentDocument, "mousedown", (e) => {
-					//修复在Edge下如果点击Trigger并由上层组件隐藏Popup时，导致mouseup无法触发从而导致文字选择的BUG...
-					//不在Trigger里修复，这部分需要由上层组件通过setTimeout方式延迟隐藏的方式来规避
-					//e.preventDefault();
 					this.onDocumentClick(e);
 				});
 			}
@@ -226,6 +244,10 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 
 	getTriggerNode() {
 		return findDOMNode(this) as HTMLElement;
+	}
+
+	getPopupNode() {
+		return this.popupInstance.getPopupDOM();
 	}
 
 	protected getComponentNode() {
@@ -450,6 +472,41 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		this.hide();
 	};
 
+	protected removeClassNames() {
+		const { prefixCls } = this.props;
+		const popupNode = this.getPopupNode();
+
+		if (popupNode) {
+			[
+				`${prefixCls}-placement-top`,
+				`${prefixCls}-placement-topLeft`,
+				`${prefixCls}-placement-topRight`,
+				`${prefixCls}-placement-bottom`,
+				`${prefixCls}-placement-bottomLeft`,
+				`${prefixCls}-placement-bottomRight`,
+				`${prefixCls}-placement-left`,
+				`${prefixCls}-placement-leftTop`,
+				`${prefixCls}-placement-leftBottom`,
+				`${prefixCls}-placement-right`,
+				`${prefixCls}-placement-rightTop`,
+				`${prefixCls}-placement-rightBottom`,
+			].forEach(removeClass.bind(null, popupNode));
+		}
+	}
+
+	protected addPlacementClassName(feedback: Feedback) {
+		const { prefixCls } = this.props;
+		const popupNode = this.getPopupNode();
+
+		if (!popupNode) return;
+
+		this.removeClassNames();
+
+		if (feedback.horizontal === "left" || feedback.horizontal === "right") {
+		}
+		addClass(popupNode, `${prefixCls}-placement-${feedbackToPlacement(feedback)}`);
+	}
+
 	protected setPopupPosition(dom: HTMLElement) {
 		const { placement, offset, position: positionOpts } = this.props;
 		position(dom, {
@@ -457,7 +514,22 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 			collision: "flipfit",
 			of: this.getTriggerNode(),
 			...positionOpts,
+			using: (pos, feedback) => {
+				this.addPlacementClassName(feedback);
+
+				if (positionOpts && positionOpts.using) {
+					positionOpts.using(pos, feedback);
+				} else {
+					dom.style.left = pos.left + "px";
+					dom.style.top = pos.top + "px";
+				}
+			},
 		});
+	}
+
+	updatePopupPosition() {
+		const node = this.getPopupNode() as HTMLElement;
+		node && this.setPopupPosition(node);
 	}
 
 	protected getPopupComponent() {
@@ -522,7 +594,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 						popupTransition?.onEnter?.(dom, appearing);
 					},
 					onEntered: (dom, appearing) => {
-						this.setPopupPosition(dom);
+						// this.setPopupPosition(dom);
 						popupTransition?.onEntered?.(dom, appearing);
 
 						onAfterShow?.(dom);

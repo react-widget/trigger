@@ -1,6 +1,6 @@
 {
 	"name": "react-widget-trigger",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "trigger",
 	"main": "cjs/index.js",
 	"module": "esm/index.js",
@@ -48,7 +48,7 @@
 		"bplokjs-placement": "^1.0.2",
 		"classnames": "^2.2.6",
 		"dom-helpers": "^5.1.4",
-		"jq-position": "^1.0.1",
+		"jq-position": "^1.1.1",
 		"react-widget-popup": "^3.4.5",
 		"react-widget-portal": "^1.2.0"
 	},
