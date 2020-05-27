@@ -20,7 +20,8 @@
 		"tsc": "tsc",
 		"demo": "packez server ./examples/index.js -d dist -w -c",
 		"test": "jest",
-		"build": "run-s tsc cjs esm docs"
+		"clear": "rimraf lib cjs esm docs dist",
+		"build": "run-s clear tsc cjs esm docs"
 	},
 	"repository": {
 		"type": "git",

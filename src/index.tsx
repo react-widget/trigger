@@ -9,20 +9,13 @@ import position, { PositionOptions, Feedback } from "jq-position";
 import Portal, { PortalProps } from "react-widget-portal";
 import getPlacement, { Placements } from "./getPlacement";
 
-const isMobile =
-	typeof navigator !== "undefined" &&
-	!!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
+// const isMobile =
+// 	typeof navigator !== "undefined" &&
+// 	!!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
 
-type ActionType = "click" | "contextMenu" | "focus" | "hover" | "mouseDown" | "mouseUp";
-type ShowActionType = "click" | "contextMenu" | "focus" | "mouseEnter" | "mouseDown" | "mouseUp";
-type HideActionType =
-	| "click"
-	| "mouseLeave"
-	| "blur"
-	| "resize"
-	| "scroll"
-	| "mouseDown"
-	| "mouseUp";
+type ActionType = "click" | "contextMenu" | "focus" | "hover" | "mouseDown";
+type ShowActionType = "click" | "contextMenu" | "focus" | "mouseEnter" | "mouseDown";
+type HideActionType = "click" | "mouseLeave" | "blur" | "resize" | "mouseDown";
 type Delay = {
 	show?: number;
 	hide?: number;
@@ -60,11 +53,11 @@ export interface TriggerProps {
 	/** 触发事件 */
 	action?: ActionType | ActionType[] | null;
 	/** 显示触发事件，同action合并 */
-	// TODO: 只针对triggerNode?
 	showAction?: ShowActionType | ShowActionType[] | null;
 	/** 隐藏触发事件，同action合并 */
-	// TODO: 只针对Outside?
 	hideAction?: HideActionType | HideActionType[] | null;
+	/** 点击popup或trigger元素以外的节点时隐藏popup事件 */
+	outsideHideEventName?: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap;
 	/** 显示/隐藏延迟时间 */
 	delay?: number | Delay;
 	/** 触发后弹出显示内容 */
@@ -150,6 +143,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		action: ["click"],
 		showAction: [],
 		hideAction: [],
+		outsideHideEventName: ["mousedown", "click", "scroll"],
 		delay: 0,
 		getDocument: () => window.document,
 		container: document.body,
@@ -205,7 +199,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	}
 
 	protected togglePopupCloseEvents() {
-		const { getDocument } = this.props;
+		const { getDocument, outsideHideEventName } = this.props;
 		const { popupVisible } = this.state;
 
 		if (popupVisible) {
@@ -213,21 +207,30 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 
 			if (
 				!this.clickOutsideHandler &&
-				(this.isMouseDownToHide() ||
-					this.isMouseUpToHide() ||
-					this.isClickToHide() ||
-					this.isContextMenuToShow())
+				(this.isMouseDownToHide() || this.isClickToHide() || this.isContextMenuToShow())
 			) {
-				this.clickOutsideHandler = listen(
-					currentDocument,
-					"mousedown",
-					this.onOutsideClick
-				);
+				if (Array.isArray(outsideHideEventName)) {
+					const cancelHandlers: ReturnType<typeof listen>[] = [];
+					outsideHideEventName.forEach((name) => {
+						cancelHandlers.push(
+							listen(currentDocument, name, this.onOutsideClickToHide)
+						);
+					});
+					this.clickOutsideHandler = () => {
+						cancelHandlers.forEach((cancel) => cancel());
+					};
+				} else {
+					this.clickOutsideHandler = listen(
+						currentDocument,
+						outsideHideEventName!,
+						this.onOutsideClickToHide
+					);
+				}
 			}
 
-			if (!this.touchOutsideHandler && isMobile) {
-				this.touchOutsideHandler = listen(currentDocument, "click", this.onOutsideClick);
-			}
+			// if (!this.touchOutsideHandler && isMobile) {
+			// 	this.touchOutsideHandler = listen(currentDocument, "click", this.onOutsideClick);
+			// }
 
 			// close popup when trigger type contains 'onContextMenu' and document is scrolling.
 			if (!this.contextMenuOutsideHandler1 && this.isContextMenuToShow()) {
@@ -243,9 +246,13 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 				this.contextMenuOutsideHandler2 = listen(window, "blur", this.onContextMenuClose);
 			}
 
-			if (!this.windowScrollHandler && this.isWindowScrollToHide()) {
-				this.windowScrollHandler = listen(currentDocument, "scroll", this.onOutsideClick);
-			}
+			// if (!this.windowScrollHandler && this.isWindowScrollToHide()) {
+			// 	this.windowScrollHandler = listen(
+			// 		currentDocument,
+			// 		"scroll",
+			// 		this.onOutsideClickToHide
+			// 	);
+			// }
 
 			if (!this.windowResizeHandler && this.isWindowResizeToHide()) {
 				//@ts-ignore
@@ -268,7 +275,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		return findDOMNode(this) as HTMLElement;
 	}
 
-	protected onOutsideClick = (event: MouseEvent) => {
+	protected onOutsideClickToHide = (event: MouseEvent) => {
 		const target = event.target as Element;
 		const triggerNode = this.getTriggerNode();
 		const popupRootNode = this.popupInstance.getRootDOM();
@@ -410,14 +417,6 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		return this.checkToHide(["mouseDown"]);
 	}
 
-	protected isMouseUpToShow() {
-		return this.checkToShow(["mouseUp"]);
-	}
-
-	protected isMouseUpToHide() {
-		return this.checkToHide(["mouseUp"]);
-	}
-
 	protected isClickToShow() {
 		return this.checkToShow(["click"]);
 	}
@@ -446,9 +445,9 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		return this.checkToHide(["resize"]);
 	};
 
-	protected isWindowScrollToHide = () => {
-		return this.checkToHide(["scroll"]);
-	};
+	// protected isWindowScrollToHide = () => {
+	// 	return this.checkToHide(["scroll"]);
+	// };
 
 	protected onContextMenu(e: React.MouseEvent) {
 		e.preventDefault();
@@ -470,14 +469,6 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 			(this.isMouseDownToHide() && !nextVisible) ||
 			(nextVisible && this.isMouseDownToShow())
 		) {
-			this.delaySetPopupVisible(nextVisible);
-		}
-	}
-
-	protected onTriggerMouseUp(e: React.MouseEvent) {
-		const nextVisible = !this.state.popupVisible;
-
-		if ((this.isMouseUpToHide() && !nextVisible) || (nextVisible && this.isMouseUpToShow())) {
 			this.delaySetPopupVisible(nextVisible);
 		}
 	}
@@ -699,20 +690,6 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 				this.clearDelayTimer();
 
 				this.onTriggerMouseDown(e);
-			};
-		}
-
-		if (this.isMouseUpToShow() || this.isMouseUpToHide()) {
-			newChildProps.onMouseUp = (e) => {
-				if (child.props.onMouseUp) {
-					child.props.onMouseUp(e);
-				}
-
-				if (checkDefaultPrevented && e.defaultPrevented) return;
-
-				this.clearDelayTimer();
-
-				this.onTriggerMouseUp(e);
 			};
 		}
 

@@ -102,6 +102,8 @@ export interface TriggerProps {
     showAction?: ShowActionType | ShowActionType[] | null;
     /** 隐藏触发事件，同action合并 */
     hideAction?: HideActionType | HideActionType[] | null;
+    /** 点击popup或trigger元素以外的节点时隐藏popup事件 */
+    outsideHideEventName?: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap;
     /** 显示/隐藏延迟时间 */
     delay?: number | Delay;
     /** 触发后弹出显示内容 */
@@ -145,6 +147,8 @@ export interface TriggerProps {
     forceRender?: boolean;
     /** jquery-ui/position.js 的配置参数 */
     position?: PositionOptions;
+    /** portal挂载容器 */
+    container?: PortalProps["container"];
     /** 内部使用 */
     getDocument?: () => Document | Element;
     /** 内部使用 */
@@ -177,7 +181,8 @@ export default Trigger;
 	defaultPopupVisible: false,
 	action: ["click"],
 	showAction: [],
-	hideAction: [],
+    hideAction: [],
+    outsideHideEventName: ["mousedown", "click", "scroll"],
 	delay: 0,
 	getDocument: () => window.document,
 	container: document.body,
