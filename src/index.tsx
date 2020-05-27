@@ -13,9 +13,16 @@ const isMobile =
 	typeof navigator !== "undefined" &&
 	!!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
 
-type ActionType = "click" | "contextMenu" | "focus" | "hover" | "mouseDown";
-type ShowActionType = "click" | "contextMenu" | "focus" | "mouseEnter" | "mouseDown";
-type HideActionType = "click" | "mouseLeave" | "blur" | "resize" | "scroll" | "mouseDown";
+type ActionType = "click" | "contextMenu" | "focus" | "hover" | "mouseDown" | "mouseUp";
+type ShowActionType = "click" | "contextMenu" | "focus" | "mouseEnter" | "mouseDown" | "mouseUp";
+type HideActionType =
+	| "click"
+	| "mouseLeave"
+	| "blur"
+	| "resize"
+	| "scroll"
+	| "mouseDown"
+	| "mouseUp";
 type Delay = {
 	show?: number;
 	hide?: number;
@@ -53,8 +60,10 @@ export interface TriggerProps {
 	/** 触发事件 */
 	action?: ActionType | ActionType[] | null;
 	/** 显示触发事件，同action合并 */
+	// TODO: 只针对triggerNode?
 	showAction?: ShowActionType | ShowActionType[] | null;
 	/** 隐藏触发事件，同action合并 */
+	// TODO: 只针对Outside?
 	hideAction?: HideActionType | HideActionType[] | null;
 	/** 显示/隐藏延迟时间 */
 	delay?: number | Delay;
@@ -204,15 +213,20 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 
 			if (
 				!this.clickOutsideHandler &&
-				(this.isMouseDownToHide() || this.isClickToHide() || this.isContextMenuToShow())
+				(this.isMouseDownToHide() ||
+					this.isMouseUpToHide() ||
+					this.isClickToHide() ||
+					this.isContextMenuToShow())
 			) {
-				this.clickOutsideHandler = listen(currentDocument, "mousedown", (e) => {
-					this.onDocumentClick(e);
-				});
+				this.clickOutsideHandler = listen(
+					currentDocument,
+					"mousedown",
+					this.onOutsideClick
+				);
 			}
 
 			if (!this.touchOutsideHandler && isMobile) {
-				this.touchOutsideHandler = listen(currentDocument, "click", this.onDocumentClick);
+				this.touchOutsideHandler = listen(currentDocument, "click", this.onOutsideClick);
 			}
 
 			// close popup when trigger type contains 'onContextMenu' and document is scrolling.
@@ -230,7 +244,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 			}
 
 			if (!this.windowScrollHandler && this.isWindowScrollToHide()) {
-				this.windowScrollHandler = listen(currentDocument, "scroll", this.onDocumentClick);
+				this.windowScrollHandler = listen(currentDocument, "scroll", this.onOutsideClick);
 			}
 
 			if (!this.windowResizeHandler && this.isWindowResizeToHide()) {
@@ -254,7 +268,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		return findDOMNode(this) as HTMLElement;
 	}
 
-	protected onDocumentClick = (event: MouseEvent) => {
+	protected onOutsideClick = (event: MouseEvent) => {
 		const target = event.target as Element;
 		const triggerNode = this.getTriggerNode();
 		const popupRootNode = this.popupInstance.getRootDOM();
@@ -396,6 +410,14 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		return this.checkToHide(["mouseDown"]);
 	}
 
+	protected isMouseUpToShow() {
+		return this.checkToShow(["mouseUp"]);
+	}
+
+	protected isMouseUpToHide() {
+		return this.checkToHide(["mouseUp"]);
+	}
+
 	protected isClickToShow() {
 		return this.checkToShow(["click"]);
 	}
@@ -448,6 +470,14 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 			(this.isMouseDownToHide() && !nextVisible) ||
 			(nextVisible && this.isMouseDownToShow())
 		) {
+			this.delaySetPopupVisible(nextVisible);
+		}
+	}
+
+	protected onTriggerMouseUp(e: React.MouseEvent) {
+		const nextVisible = !this.state.popupVisible;
+
+		if ((this.isMouseUpToHide() && !nextVisible) || (nextVisible && this.isMouseUpToShow())) {
 			this.delaySetPopupVisible(nextVisible);
 		}
 	}
@@ -669,6 +699,20 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 				this.clearDelayTimer();
 
 				this.onTriggerMouseDown(e);
+			};
+		}
+
+		if (this.isMouseUpToShow() || this.isMouseUpToHide()) {
+			newChildProps.onMouseUp = (e) => {
+				if (child.props.onMouseUp) {
+					child.props.onMouseUp(e);
+				}
+
+				if (checkDefaultPrevented && e.defaultPrevented) return;
+
+				this.clearDelayTimer();
+
+				this.onTriggerMouseUp(e);
 			};
 		}
 

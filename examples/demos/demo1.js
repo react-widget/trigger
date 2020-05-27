@@ -86,6 +86,7 @@ export default class DEMO extends Component {
 				<TriggerButton
 					placement="bottomLeft"
 					action="click"
+					// hideAction="mouseDown"
 					text="action:click"
 					popupTransition={{ classNames: animateClassNames, timeout: 300 }}
 				/>
