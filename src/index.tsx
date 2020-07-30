@@ -318,7 +318,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	}
 
 	protected _setPopupVisible(popupVisible: boolean) {
-		if (!("popupVisible" in this.props)) {
+		if (this.props.popupVisible === undefined) {
 			this.setState({
 				popupVisible,
 			});
