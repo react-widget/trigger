@@ -523,8 +523,6 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 
 		this.removeClassNames();
 
-		if (feedback.horizontal === "left" || feedback.horizontal === "right") {
-		}
 		addClass(popupNode, `${prefixCls}-placement-${feedbackToPlacement(feedback)}`);
 	}
 
