@@ -26,17 +26,17 @@ export const version = "%VERSION%";
 export function feedbackToPlacement(feedback: Feedback) {
 	const map = {
 		center_top_center_bottom: "top",
-		left_top_left_bottom: "topLeft",
-		right_top_right_bottom: "topRight",
+		left_top_left_bottom: "top-left",
+		right_top_right_bottom: "top-right",
 		center_bottom_center_top: "bottom",
-		left_bottom_left_top: "bottomLeft",
-		right_bottom_right_top: "bottomRight",
+		left_bottom_left_top: "bottom-left",
+		right_bottom_right_top: "bottom-right",
 		left_center_right_center: "left",
-		left_top_right_top: "leftTop",
-		left_bottom_right_bottom: "leftBottom",
+		left_top_right_top: "left-top",
+		left_bottom_right_bottom: "left-bottom",
 		right_center_left_center: "right",
-		right_top_left_top: "rightTop",
-		right_bottom_left_bottom: "rightBottom",
+		right_top_left_top: "right-top",
+		right_bottom_left_bottom: "right-bottom",
 	};
 
 	return map[feedback.at.join("_") + "_" + feedback.my.join("_")];
