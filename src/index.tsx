@@ -9,14 +9,12 @@ import position, { PositionOptions, Feedback } from "jq-position";
 import Portal, { PortalProps } from "react-widget-portal";
 import getPlacement, { Placements } from "./getPlacement";
 
-// const isMobile =
-// 	typeof navigator !== "undefined" &&
-// 	!!navigator.userAgent.match(/(Android|iPhone|iPad|iPod|iOS|UCWEB)/i);
+export type { Placements };
 
-type ActionType = "click" | "contextMenu" | "focus" | "hover" | "mouseDown";
-type ShowActionType = "click" | "contextMenu" | "focus" | "mouseEnter" | "mouseDown";
-type HideActionType = "click" | "mouseLeave" | "blur" | "resize" | "mouseDown";
-type Delay = {
+export type ActionType = "click" | "contextMenu" | "focus" | "hover" | "mouseDown";
+export type ShowActionType = "click" | "contextMenu" | "focus" | "mouseEnter" | "mouseDown";
+export type HideActionType = "click" | "mouseLeave" | "blur" | "resize" | "mouseDown";
+export type Delay = {
 	show?: number;
 	hide?: number;
 };
@@ -117,6 +115,14 @@ export interface TriggerProps {
 	forceRender?: boolean;
 	/** jquery-ui/position.js 的配置参数 */
 	position?: PositionOptions;
+	adjustPosition?: (
+		dom: HTMLElement,
+		pos: {
+			left: number;
+			top: number;
+		},
+		feedback: Feedback
+	) => void;
 	/** portal挂载容器 */
 	container?: PortalProps["container"];
 	/** 内部使用 */
@@ -527,7 +533,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	}
 
 	protected setPopupPosition(dom: HTMLElement) {
-		const { placement, offset, position: positionOpts } = this.props;
+		const { placement, offset, position: positionOpts, adjustPosition } = this.props;
 		position(dom, {
 			...getPlacement(placement!, offset),
 			collision: "flipfit",
@@ -541,6 +547,10 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 				} else {
 					dom.style.left = pos.left + "px";
 					dom.style.top = pos.top + "px";
+				}
+
+				if (adjustPosition) {
+					adjustPosition(dom, pos, feedback);
 				}
 			},
 		});

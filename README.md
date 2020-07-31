@@ -80,7 +80,21 @@ export default function App() {
 import React from "react";
 import Popup, { PopupProps } from "react-widget-popup";
 import { PositionOptions } from "jq-position";
-import { Placements } from "./getPlacement";
+
+type Placements =
+	| "left"
+	| "top"
+	| "right"
+	| "bottom"
+	| "topLeft"
+	| "topRight"
+	| "leftTop"
+	| "leftBottom"
+	| "rightTop"
+	| "rightBottom"
+	| "bottomRight"
+	| "bottomLeft"
+
 declare type ActionType = "click" | "contextMenu" | "focus" | "hover" | "mouseDown";
 declare type ShowActionType = "click" | "contextMenu" | "focus" | "mouseEnter" | "mouseDown";
 declare type HideActionType = "click" | "mouseLeave" | "blur" | "resize" | "scroll" | "mouseDown";
