@@ -9,7 +9,7 @@ import position, { PositionOptions, Feedback } from "jq-position";
 import Portal, { PortalProps } from "react-widget-portal";
 import getPlacement, { Placements } from "./getPlacement";
 
-export type { Placements };
+export type { Placements, PositionOptions, Feedback };
 
 export type ActionType = "click" | "contextMenu" | "focus" | "hover" | "mouseDown";
 export type ShowActionType = "click" | "contextMenu" | "focus" | "mouseEnter" | "mouseDown";
