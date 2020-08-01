@@ -115,6 +115,7 @@ export interface TriggerProps {
 	forceRender?: boolean;
 	/** jquery-ui/position.js 的配置参数 */
 	position?: PositionOptions;
+	/** popup位置最终适配方法 */
 	adjustPosition?: (
 		dom: HTMLElement,
 		pos: {

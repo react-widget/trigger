@@ -155,6 +155,15 @@ export interface TriggerProps {
     destroyPopupOnHide?: boolean;
     /** 设置弹出框的zIndex */
     zIndex?: number;
+    /** popup位置最终适配方法 */
+	adjustPosition?: (
+		dom: HTMLElement,
+		pos: {
+			left: number;
+			top: number;
+		},
+		feedback: Feedback
+	) => void;
     /** 是否使用Portal进行渲染弹出框 */
     usePortal?: boolean;
     /** 当destroyPopupOnHide=false时，组件刷新时强制更新弹出框组件 */
