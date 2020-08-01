@@ -364,6 +364,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		}
 
 		this.clearDelayTimer();
+		this.clearOutsideHandler();
 
 		const delay = this.getDelayTime(visible ? "show" : "hide");
 
