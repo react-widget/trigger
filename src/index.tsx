@@ -177,7 +177,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 
 	protected delayTimer: number | null = null;
 
-	popupInstance?: Popup;
+	popupInstance: Popup;
 	triggerInstance: React.ReactInstance;
 
 	protected refHandlers = {
@@ -279,7 +279,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	}
 
 	getPopupNode() {
-		return this.popupInstance?.getPopupDOM();
+		return this.popupInstance.getPopupDOM();
 	}
 
 	protected getComponentNode() {
@@ -289,9 +289,9 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	protected onOutsideClickToHide = (event: MouseEvent) => {
 		const target = event.target as Element;
 		const triggerNode = this.getTriggerNode();
-		const popupRootNode = this.popupInstance?.getRootDOM();
+		const popupRootNode = this.popupInstance.getRootDOM();
 
-		if (popupRootNode && !contains(triggerNode, target) && !contains(popupRootNode!, target)) {
+		if ( !contains(triggerNode, target) && !contains(popupRootNode!, target)) {
 			this.hide();
 		}
 	};
@@ -505,35 +505,28 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		this.hide();
 	};
 
-	protected removeClassNames() {
+	protected removeClassNames(popupNode: HTMLElement) {
 		const { prefixCls } = this.props;
-		const popupNode = this.getPopupNode();
-
-		if (popupNode) {
-			[
-				`${prefixCls}-placement-top`,
-				`${prefixCls}-placement-topLeft`,
-				`${prefixCls}-placement-topRight`,
-				`${prefixCls}-placement-bottom`,
-				`${prefixCls}-placement-bottomLeft`,
-				`${prefixCls}-placement-bottomRight`,
-				`${prefixCls}-placement-left`,
-				`${prefixCls}-placement-leftTop`,
-				`${prefixCls}-placement-leftBottom`,
-				`${prefixCls}-placement-right`,
-				`${prefixCls}-placement-rightTop`,
-				`${prefixCls}-placement-rightBottom`,
-			].forEach(removeClass.bind(null, popupNode));
-		}
+		[
+			`${prefixCls}-placement-top`,
+			`${prefixCls}-placement-topLeft`,
+			`${prefixCls}-placement-topRight`,
+			`${prefixCls}-placement-bottom`,
+			`${prefixCls}-placement-bottomLeft`,
+			`${prefixCls}-placement-bottomRight`,
+			`${prefixCls}-placement-left`,
+			`${prefixCls}-placement-leftTop`,
+			`${prefixCls}-placement-leftBottom`,
+			`${prefixCls}-placement-right`,
+			`${prefixCls}-placement-rightTop`,
+			`${prefixCls}-placement-rightBottom`,
+		].forEach(removeClass.bind(null, popupNode));
 	}
 
-	protected addPlacementClassName(feedback: Feedback) {
+	protected addPlacementClassName(popupNode: HTMLElement, feedback: Feedback) {
 		const { prefixCls } = this.props;
-		const popupNode = this.getPopupNode();
 
-		if (!popupNode) return;
-
-		this.removeClassNames();
+		this.removeClassNames(popupNode);
 
 		addClass(popupNode, `${prefixCls}-placement-${feedbackToPlacement(feedback)}`);
 	}
@@ -546,7 +539,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 			of: this.getTriggerNode(),
 			...positionOpts,
 			using: (pos, feedback) => {
-				this.addPlacementClassName(feedback);
+				this.addPlacementClassName(dom, feedback);
 
 				if (positionOpts && positionOpts.using) {
 					positionOpts.using(pos, feedback);

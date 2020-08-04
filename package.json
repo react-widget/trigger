@@ -1,6 +1,6 @@
 {
 	"name": "react-widget-trigger",
-	"version": "2.0.7",
+	"version": "2.0.8",
 	"description": "trigger",
 	"main": "cjs/index.js",
 	"module": "esm/index.js",
