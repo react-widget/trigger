@@ -150,7 +150,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		action: ["click"],
 		showAction: [],
 		hideAction: [],
-		outsideHideEventName: ["mousedown", "click", "scroll"],
+		outsideHideEventName: ["mousedown", "click"], //, "scroll"
 		delay: 0,
 		getDocument: () => window.document,
 		container: document.body,
@@ -177,7 +177,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 
 	protected delayTimer: number | null = null;
 
-	popupInstance: Popup;
+	popupInstance?: Popup;
 	triggerInstance: React.ReactInstance;
 
 	protected refHandlers = {
@@ -250,7 +250,11 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 			// close popup when trigger type contains 'onContextMenu' and window is blur.
 			if (!this.contextMenuOutsideHandler2 && this.isContextMenuToShow()) {
 				//@ts-ignore
-				this.contextMenuOutsideHandler2 = listen(window, "blur", this.onContextMenuClose);
+				this.contextMenuOutsideHandler2 = listen(
+					window as any,
+					"blur",
+					this.onContextMenuClose
+				);
 			}
 
 			// if (!this.windowScrollHandler && this.isWindowScrollToHide()) {
@@ -275,7 +279,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	}
 
 	getPopupNode() {
-		return this.popupInstance.getPopupDOM();
+		return this.popupInstance?.getPopupDOM();
 	}
 
 	protected getComponentNode() {
@@ -285,9 +289,9 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	protected onOutsideClickToHide = (event: MouseEvent) => {
 		const target = event.target as Element;
 		const triggerNode = this.getTriggerNode();
-		const popupRootNode = this.popupInstance.getRootDOM();
+		const popupRootNode = this.popupInstance?.getRootDOM();
 
-		if (!contains(triggerNode, target) && !contains(popupRootNode!, target)) {
+		if (popupRootNode && !contains(triggerNode, target) && !contains(popupRootNode!, target)) {
 			this.hide();
 		}
 	};
