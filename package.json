@@ -1,6 +1,6 @@
 {
 	"name": "react-widget-trigger",
-	"version": "2.0.8",
+	"version": "2.0.9",
 	"description": "trigger",
 	"main": "cjs/index.js",
 	"module": "esm/index.js",
@@ -50,7 +50,7 @@
 		"classnames": "^2.2.6",
 		"dom-helpers": "^5.1.4",
 		"jq-position": "^1.1.1",
-		"react-widget-popup": "^3.4.5",
+		"react-widget-popup": "^3.4.7",
 		"react-widget-portal": "^1.2.0"
 	},
 	"devDependencies": {
