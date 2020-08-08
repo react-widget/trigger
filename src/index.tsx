@@ -58,6 +58,8 @@ export interface TriggerProps {
 	outsideHideEventName?: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap;
 	/** 显示/隐藏延迟时间 */
 	delay?: number | Delay;
+	/** 禁用触发器 */
+	disabled?: boolean;
 	/** 触发后弹出显示内容 */
 	popup?: React.ReactNode | ((trigger: Trigger) => React.ReactNode);
 	/** 弹出框CSS样式 */
@@ -166,8 +168,11 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 
 	static getDerivedStateFromProps(nextProps: TriggerProps, state: TriggerState) {
 		return {
-			popupVisible:
-				nextProps.popupVisible === undefined ? state.popupVisible : nextProps.popupVisible,
+			popupVisible: nextProps.disabled
+				? false
+				: nextProps.popupVisible === undefined
+				? state.popupVisible
+				: nextProps.popupVisible,
 		};
 	}
 
@@ -291,7 +296,7 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 		const triggerNode = this.getTriggerNode();
 		const popupRootNode = this.popupInstance.getRootDOM();
 
-		if ( !contains(triggerNode, target) && !contains(popupRootNode!, target)) {
+		if (!contains(triggerNode, target) && !contains(popupRootNode!, target)) {
 			this.hide();
 		}
 	};
@@ -669,8 +674,12 @@ export class Trigger extends React.Component<TriggerProps, TriggerState> {
 	}
 
 	protected genNewChildProps(child: React.ReactElement) {
-		const { checkDefaultPrevented } = this.props;
+		const { checkDefaultPrevented, disabled } = this.props;
 		const newChildProps: React.HTMLAttributes<any> = {};
+
+		if (disabled) {
+			return newChildProps;
+		}
 
 		if (this.isContextMenuToShow()) {
 			newChildProps.onContextMenu = (e) => {

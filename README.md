@@ -120,6 +120,8 @@ export interface TriggerProps {
     outsideHideEventName?: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap;
     /** 显示/隐藏延迟时间 */
     delay?: number | Delay;
+    /** 禁用触发器 */
+	disabled?: boolean;
     /** 触发后弹出显示内容 */
     popup?: React.ReactNode | ((trigger: Trigger) => React.ReactNode);
     /** 弹出框CSS样式 */
